@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 
 import GET_CHANNEL from '../../../../../pages/api/query/youtube/get-channel.gql';
+import { seedChannels, findSeedChannel } from 'components/_context/youtube/seed';
 import {
   Copy,
   External,
@@ -20,17 +21,22 @@ import styles from './styles.module.scss';
 export default function Channel() {
   const router = useRouter();
   const channelId: string = router.query['id'] as string;
+  const isSeedChannel = typeof channelId === 'string' && channelId.startsWith('seed-');
 
   const { data, error, loading, refetch } = useQuery(GET_CHANNEL, {
     variables: {
       id: channelId
-    }
+    },
+    skip: isSeedChannel
   });
+
+  const channel = isSeedChannel ? findSeedChannel(channelId) : data?.channel;
+  const updatedAt = channel?.updatedAt ? new Date(channel.updatedAt).toDateString() : 'Recently';
 
   return (
     <div>
       <Head>
-        <title>{channelId}</title>
+        <title>{channel?.channel_name ?? channelId}</title>
         <meta property="og:channelId" content="channelId" key="channelId" />
         <link rel="shortcut icon" href="/search.svg" />
       </Head>
@@ -44,7 +50,7 @@ export default function Channel() {
             </Link>
           </div>
           <div className={styles.user_infos_header}>
-            <h1>{data?.channel?.channel_name}</h1>
+            <h1>{channel?.channel_name}</h1>
 
             <div className={styles.controller_list}>
               <a href="#" className={styles.wishlist}>
@@ -62,13 +68,11 @@ export default function Channel() {
             </div>
           </div>
 
-          <Channel.BasicInfo data={data?.channel} />
-          <Channel.AnvancedInfo />
+          <Channel.BasicInfo data={channel} />
+          <Channel.AnvancedInfo data={channel} />
 
           <div className={styles.update}>
-            <span className={styles.update__last}>
-              Last Updated: {new Date(data?.channel?.updatedAt).toDateString()}
-            </span>
+            <span className={styles.update__last}>Last Updated: {updatedAt}</span>
             {/* <a href="#" className="btn">
               Request for Update
             </a> */}
@@ -79,7 +83,7 @@ export default function Channel() {
   );
 }
 
-Channel.BasicInfo = (data: any) => {
+Channel.BasicInfo = ({ data }: { data?: any }) => {
   return (
     <>
       <div className={styles.basic__info}>
@@ -87,27 +91,27 @@ Channel.BasicInfo = (data: any) => {
         <ul>
           <li>
             <span className={styles.info__title}>Channel name:</span>
-            {data?.data?.channel_name}
+            {data?.channel_name ?? 'null'}
           </li>
           <li>
             <span className={styles.info__title}>Subscribers:</span>
-            {data?.data?.subscribers ?? 'null'}
+            {data?.subscribers ?? 'null'}
           </li>
           <li>
             <span className={styles.info__title}>Category:</span>
-            {data?.data?.socialblade_category ?? 'null'}
+            {data?.socialblade_category ?? 'null'}
           </li>
           <li>
             <span className={styles.info__title}>Views:</span>
-            {data?.data?.views ?? 'null'}
+            {data?.views ?? 'null'}
           </li>
           <li>
             <span className={styles.info__title}>Location:</span>
-            {data?.data?.location ?? 'null'}
+            {data?.location ?? 'null'}
           </li>
           <li>
             <span className={styles.info__title}>Joining Date:</span>
-            {data?.data?.joined ?? 'null'}
+            {data?.joined ?? 'null'}
           </li>
         </ul>
       </div>
@@ -115,11 +119,30 @@ Channel.BasicInfo = (data: any) => {
   );
 };
 
-Channel.AnvancedInfo = ({}) => {
+Channel.AnvancedInfo = ({ data }: { data?: any }) => {
   return (
     <div className={styles.advanced__info}>
       <h3>Advanced information</h3>
-      <p>
+      <ul>
+        <li>
+          <span className={styles.info__title}>Channel URL:</span>
+          <div className={styles.info__description}>
+            <div className={styles.info__item}>
+              <a href={data?.channel_url ?? '#'} target="_blank" rel="noreferrer">
+                {data?.channel_url ?? 'No URL available'}
+              </a>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <span className={styles.info__title}>Description:</span>
+          <div className={styles.info__description}>
+            {data?.description ?? 'No description available'}
+          </div>
+        </li>
+      </ul>
+      {/* <p>
         Coming Soon! .... Contact Email , Channel URL, Description, social media links (facebook,
         instagram, twitter,pinterest and many more )
       </p>

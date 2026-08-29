@@ -47,7 +47,7 @@ export default function Index() {
     <>
       <div className={styles.container__element_inner}>
         <Tab items={searchNavElements} />
-        {currentUser ? (
+        {currentUser || channels?.length > 0 ? (
           <div className={styles.filterContainer}>
             <div className={styles.filterContainer_inner}>
               <div className={styles.search_wrap}>
@@ -90,8 +90,9 @@ export default function Index() {
                     items={channels}
                     headersEnums={YoutubeTableEnum}
                     parentRoute="/dashboard/search/youtube"
-                    unlockedItems={currentUser.youtube}
-                    onUnlock={unlockLead}
+                    isLocked={Boolean(currentUser)}
+                    unlockedItems={currentUser?.youtube ?? []}
+                    onUnlock={currentUser ? unlockLead : undefined}
                   />
                 )}
                 {loading && <Table items={channels} headersEnums={YoutubeTableEnum} loading />}
