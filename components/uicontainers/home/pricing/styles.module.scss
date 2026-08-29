@@ -32,6 +32,11 @@
     background: white;
     text-align: center;
     position: relative;
+    cursor: pointer;
+    transition:
+      box-shadow 0.2s ease,
+      outline 0.2s ease,
+      transform 0.2s ease;
 
     .listItems {
       display: flex;
@@ -43,6 +48,7 @@
     &:hover {
       box-shadow: 0px 00px 20px $os-primary;
       outline: 2px solid $os-primary;
+      transform: translateY(-2px);
     }
 
     @media (max-width: 767px) {
