@@ -63,7 +63,7 @@ const Login: FC<Props> = (): JSX.Element => {
             Hello, <span>Welcome!</span>
           </h1>
 
-          {/* <div className={styles.switch_button}>
+          <div className={styles.switch_button}>
             <span className={styles.active} style={{ left: switchBtn ? '50%' : '0' }}></span>
             <button
               className={`${styles.switch_button_case} ${
@@ -77,7 +77,7 @@ const Login: FC<Props> = (): JSX.Element => {
               onClick={handleRegBtn}>
               Register
             </button>
-          </div> */}
+          </div>
 
           <div className={styles.terms_conditions}>
             <form action="">
