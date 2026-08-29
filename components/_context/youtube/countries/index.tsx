@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { useQuery } from '@apollo/client';
 
 import GET_CHANNEL_COUNTRIES from '../../../../pages/api/query/youtube/get-channel-countries.query.gql';
+import { seedCountries } from '../seed';
 
 const CountriesContext = createContext({
   countries: null
@@ -13,7 +14,7 @@ function CountriesProvider({ children }) {
   return (
     <CountriesContext.Provider
       value={{
-        countries: data?.getChannelCountries?.locations
+        countries: data?.getChannelCountries?.locations ?? seedCountries
       }}>
       {children}
     </CountriesContext.Provider>

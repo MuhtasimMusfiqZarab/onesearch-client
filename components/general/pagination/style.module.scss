@@ -3,6 +3,9 @@
 
   & ul {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
     background: #fff;
     padding: 0.5rem;
     border-radius: 3rem;
@@ -60,6 +63,45 @@
   &__numberActive {
     color: #fff !important;
     background: $os-secondary;
+  }
+  &__goto {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.6rem;
+    border-radius: 999px;
+    border: 1px solid #dfeaf3;
+    background: #f8fbff;
+    cursor: default;
+
+    input {
+      width: 3.4rem;
+      min-width: 3.4rem;
+      height: 2rem;
+      border: 1px solid #d9e7f2;
+      border-radius: 0.6rem;
+      padding: 0 0.5rem;
+      color: $os-primary;
+      font-size: 0.85rem;
+      text-align: center;
+      outline: none;
+
+      &:focus {
+        border-color: $os-secondary;
+        box-shadow: 0 0 0 2px rgba(73, 120, 155, 0.12);
+      }
+    }
+
+    button {
+      border: none;
+      border-radius: 0.6rem;
+      background: $os-secondary;
+      color: #fff;
+      padding: 0.35rem 0.7rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
   }
   &__dots {
     font-size: 2rem;

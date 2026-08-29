@@ -10,6 +10,7 @@ interface Props {
 
 export const Pagination: FC<Props> = ({ offset, setOffset, total }): JSX.Element => {
   const [totalPages, setTotalPages] = useState<number>(null);
+  const [pageInput, setPageInput] = useState<string>('1');
 
   useEffect(() => {
     if (total > 0) {
@@ -18,12 +19,23 @@ export const Pagination: FC<Props> = ({ offset, setOffset, total }): JSX.Element
         count++;
       }
       setTotalPages(count);
+      setPageInput(String(Math.floor(offset / 10 + 1)));
+    } else {
+      setTotalPages(null);
+      setPageInput('1');
     }
-  }, [total]);
+  }, [total, offset]);
 
-  const goToFirst = () => {};
+  const goToPage = () => {
+    const parsedPage = Number(pageInput);
+    if (!Number.isFinite(parsedPage) || totalPages === null) {
+      return;
+    }
 
-  const goToLast = () => {};
+    const safePage = Math.min(Math.max(1, parsedPage), totalPages);
+    setOffset((safePage - 1) * 10);
+    setPageInput(String(safePage));
+  };
 
   const reduceOffset = () => {
     if (offset > 0) {
@@ -32,7 +44,7 @@ export const Pagination: FC<Props> = ({ offset, setOffset, total }): JSX.Element
   };
 
   const increaseoffset = () => {
-    if (totalPages > offset + 1) {
+    if (offset + 10 < total) {
       setOffset(offset + 10);
     }
   };
@@ -51,6 +63,26 @@ export const Pagination: FC<Props> = ({ offset, setOffset, total }): JSX.Element
           <li className={`${styles.pagination__number} ${styles.pagination__numberActive}`}>
             {Math.floor(offset / 10 + 1)}
           </li>
+
+          <li className={styles.pagination__goto}>
+            <span>Go to</span>
+            <input
+              type="number"
+              min={1}
+              max={totalPages || 1}
+              value={pageInput}
+              onChange={(event) => setPageInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  goToPage();
+                }
+              }}
+            />
+            <button type="button" onClick={goToPage}>
+              Go
+            </button>
+          </li>
+
           <li
             className={`${styles.pagination__btn} ${styles.pagination__next}`}
             onClick={increaseoffset}>

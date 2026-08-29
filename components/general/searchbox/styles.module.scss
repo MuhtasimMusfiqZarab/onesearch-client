@@ -33,14 +33,24 @@
 
   //initial state of the input
   input {
-    border: 1px solid $clr-gray300;
+    border: 1.5px solid #d8dce3;
+    background: #fff;
     font-family: inherit;
     font-size: 1rem;
     color: $clr-gray400;
     outline: none;
     width: 100%;
     padding: 0.85rem 2rem 0.85rem 5rem;
-    border-radius: 0.2rem;
+    border-radius: 12px;
+    box-shadow: inset 0 0 0 1px rgba(29, 39, 59, 0.02);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: $os-primary;
+      box-shadow: 0 0 0 3px rgba(73, 120, 155, 0.12);
+    }
 
     @media (max-width: 767px) {
       padding: 0.85rem 2rem;

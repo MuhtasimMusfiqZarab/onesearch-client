@@ -35,14 +35,16 @@
   }
 
   .options_container {
-    background: $clr-gray100;
+    background: #fff;
     color: $clr-gray600;
     max-height: 0;
     width: 100%;
     opacity: 0;
     transition: all 0.4s;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
+    border: 1.5px solid #d8dce3;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
 
     //to move above the options
     order: 1;
@@ -63,7 +65,7 @@
 
     //hover effect
     .option:hover {
-      background: $clr-gray300;
+      background: rgba(73, 120, 155, 0.08);
     }
 
     //style the active ones
@@ -95,12 +97,21 @@
   padding: 12px 24px;
   cursor: pointer;
   color: $clr-gray600;
-  border-radius: $radius;
+  border-radius: 12px;
   margin-bottom: 8px;
-  border: 1px solid $clr-gray300;
+  border: 1.5px solid #d8dce3;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(29, 39, 59, 0.02);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   //position relative for positioning the icon
   position: relative;
   order: 0;
+
+  &:hover {
+    border-color: #b7c1cf;
+  }
 
   &::after {
     content: '';
@@ -131,12 +142,17 @@
   input[type='search'] {
     width: 100%;
     height: 35px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+    border: 1.5px solid #d8dce3;
+    border-radius: 10px;
     padding: 0 10px;
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
 
     &:focus {
-      border: 1px solid #767b91;
+      border-color: $os-primary;
+      box-shadow: 0 0 0 3px rgba(73, 120, 155, 0.12);
     }
   }
 }

@@ -193,7 +193,7 @@ const channelNames = [
   'Point & Pace'
 ];
 
-const categories = [
+export const seedCategories = [
   'Education',
   'Technology',
   'Business',
@@ -206,7 +206,7 @@ const categories = [
   'Fitness'
 ];
 
-const countries = [
+export const seedCountries = [
   'United States',
   'Canada',
   'United Kingdom',
@@ -218,6 +218,9 @@ const countries = [
   'Japan',
   'South Korea'
 ];
+
+const categories = seedCategories;
+const countries = seedCountries;
 
 const buildJoinedDate = (index: number) => {
   const year = 2013 + (index % 11);

@@ -47,7 +47,7 @@ export default function Index() {
     <>
       <div className={styles.container__element_inner}>
         <Tab items={searchNavElements} />
-        {currentUser || channels?.length > 0 ? (
+        {currentUser || channels !== null ? (
           <div className={styles.filterContainer}>
             <div className={styles.filterContainer_inner}>
               <div className={styles.search_wrap}>
@@ -96,7 +96,7 @@ export default function Index() {
                   />
                 )}
                 {loading && <Table items={channels} headersEnums={YoutubeTableEnum} loading />}
-                {channels?.length === 0 && <NotFound />}
+                {!loading && channels?.length === 0 && <NotFound />}
               </div>
 
               {channels?.length !== 0 && (

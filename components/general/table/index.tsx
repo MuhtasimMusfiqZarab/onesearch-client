@@ -32,26 +32,32 @@ export const Table: FC<Props> = ({
   let [toggleBtn, setToggleBtn] = useState(false);
 
   const [isCheckAll, setIsCheckAll] = useState(false);
-  const [isCheck, setIsCheck] = useState([]);
+  const [isCheck, setIsCheck] = useState<(string | number)[]>([]);
 
   const [dummyArray, setDummyArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
   const handleSelectAll = (e) => {
-    setIsCheckAll(!isCheckAll);
-    setIsCheck(items.map((item) => item.id));
+    const nextState = !isCheckAll;
+    setIsCheckAll(nextState);
 
-    if (isCheckAll) {
-      setIsCheck([]);
+    if (nextState) {
+      setIsCheck(items.map((item) => item.id));
+      return;
     }
+
+    setIsCheck([]);
   };
 
   const handleClick = (e) => {
     const { id, checked } = e.target;
-    setIsCheck([...isCheck, parseInt(id)]);
+    const itemId = id;
 
-    if (!checked) {
-      setIsCheck(isCheck.filter((item) => item !== parseInt(id)));
+    if (checked) {
+      setIsCheck((prev) => [...prev, itemId]);
+      return;
     }
+
+    setIsCheck((prev) => prev.filter((item) => item !== itemId));
   };
 
   const handleToggleBtn = () => {
