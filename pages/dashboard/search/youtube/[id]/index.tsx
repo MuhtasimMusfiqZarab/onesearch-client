@@ -6,7 +6,6 @@ import { useQuery } from '@apollo/client';
 import Link from 'next/link';
 
 import GET_CHANNEL from '../../../../../pages/api/query/youtube/get-channel.gql';
-import { seedChannels, findSeedChannel } from 'components/_context/youtube/seed';
 import {
   Copy,
   External,
@@ -21,16 +20,14 @@ import styles from './styles.module.scss';
 export default function Channel() {
   const router = useRouter();
   const channelId: string = router.query['id'] as string;
-  const isSeedChannel = typeof channelId === 'string' && channelId.startsWith('seed-');
 
   const { data, error, loading, refetch } = useQuery(GET_CHANNEL, {
     variables: {
       id: channelId
-    },
-    skip: isSeedChannel
+    }
   });
 
-  const channel = isSeedChannel ? findSeedChannel(channelId) : data?.channel;
+  const channel = data?.channel;
   const updatedAt = channel?.updatedAt ? new Date(channel.updatedAt).toDateString() : 'Recently';
 
   return (

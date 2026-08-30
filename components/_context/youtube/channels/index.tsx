@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
 import GET_ALL_CHANNELS from '../../../../pages/api/query/youtube/get-channels.query.gql';
-import { seedChannels } from '../seed';
 
 const ChannelsContext = createContext({
   channels: null,
@@ -37,23 +36,7 @@ function ChannelsProvider({ children }) {
     }
   });
 
-  const hasGraphqlData = Boolean(data?.getAllChannels?.channels?.length);
-
-  const filteredSeedChannels = seedChannels.filter((channel) => {
-    const matchesSearch =
-      !searchText ||
-      channel.channel_name.toLowerCase().includes(searchText.toLowerCase()) ||
-      channel.location?.toLowerCase().includes(searchText.toLowerCase()) ||
-      channel.socialblade_category?.toLowerCase().includes(searchText.toLowerCase());
-
-    const matchesCategory = !category || channel.socialblade_category === category;
-    const matchesLocation = !location || channel.location === location;
-
-    return matchesSearch && matchesCategory && matchesLocation;
-  });
-
-  const seedPage = filteredSeedChannels.slice(offset, offset + limit);
-  const channels = hasGraphqlData ? data.getAllChannels.channels : seedPage;
+  const channels = data?.getAllChannels?.channels ?? [];
 
   return (
     <ChannelsContext.Provider
@@ -65,7 +48,7 @@ function ChannelsProvider({ children }) {
         setCategory,
         setLocation,
         loading,
-        total: data?.getAllChannels?.totalCount ?? filteredSeedChannels.length,
+        total: data?.getAllChannels?.totalCount ?? 0,
         searchText,
         setSearchText
       }}>

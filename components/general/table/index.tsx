@@ -14,6 +14,7 @@ interface Props {
   loading?: boolean;
   parentRoute?: string;
   isLocked?: boolean;
+  forceLocked?: boolean;
   unlockedItems?: object[];
   onUnlock?: (value: any) => void;
 }
@@ -26,6 +27,7 @@ export const Table: FC<Props> = ({
   loading = false,
   parentRoute,
   isLocked = true,
+  forceLocked = false,
   unlockedItems = [],
   onUnlock
 }: Props): JSX.Element => {
@@ -38,22 +40,27 @@ export const Table: FC<Props> = ({
   const [dummyArray, setDummyArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
   useEffect(() => {
+    if (forceLocked) {
+      setRowLockMap({});
+      return;
+    }
+
     setRowLockMap((prev) => {
       const next = { ...prev };
 
       items.forEach((item) => {
         if (item?.id === undefined || item?.id === null) return;
         if (!(item.id in next)) {
-          next[item.id] = Math.random() < 0.5;
+          next[item.id] = false;
         }
       });
 
       return next;
     });
-  }, [items]);
+  }, [items, forceLocked]);
 
   const isRowUnlocked = (item: any): boolean => {
-    if (!isLocked) return false;
+    if (!isLocked || forceLocked) return false;
 
     const isUserUnlocked = unlockedItems.some((value: any) => value.id === item.id);
     return isUserUnlocked || Boolean(rowLockMap[item.id]);
@@ -238,11 +245,20 @@ export const Table: FC<Props> = ({
                       {isLocked && (
                         <span
                           className={styles.save_btn}
+                          title={
+                            forceLocked
+                              ? 'You need to login to access the detailed data.'
+                              : undefined
+                          }
+                          data-tooltip={
+                            forceLocked
+                              ? 'You need to login to access the detailed data.'
+                              : undefined
+                          }
                           onClick={(event) => {
                             event.stopPropagation();
-                            if (onUnlock) {
-                              onUnlock(item.id);
-                            }
+                            if (forceLocked || !rowIsUnlocked || !onUnlock) return;
+                            onUnlock(item.id);
                           }}>
                           {rowIsUnlocked ? (
                             <UnlockIcon color="#10b981" />
