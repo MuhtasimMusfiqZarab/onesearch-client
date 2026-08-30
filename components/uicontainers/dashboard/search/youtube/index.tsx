@@ -90,7 +90,7 @@ export default function Index() {
                     items={channels}
                     headersEnums={YoutubeTableEnum}
                     parentRoute="/dashboard/search/youtube"
-                    isLocked={Boolean(currentUser)}
+                    isLocked={true}
                     unlockedItems={currentUser?.youtube ?? []}
                     onUnlock={currentUser ? unlockLead : undefined}
                   />
