@@ -38,8 +38,6 @@ export default function Index() {
   } = useUserRequests();
   let [modalIsOpen, setIsOpen] = useState(false);
 
-  console.log('THis is the request', requests);
-
   return (
     <>
       <div className={styles.container__element_inner}>
@@ -106,9 +104,8 @@ export default function Index() {
                     items={requests}
                     headersEnums={RequestsTableEnum}
                     hasController={false}
-                    hasCheckbox={true}
+                    hasCheckbox={false}
                     isLocked={false}
-                    parentRoute="/dashboard/admin/requests"
                   />
                 )}
                 {loadingAllUsers && (
