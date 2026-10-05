@@ -106,6 +106,7 @@ export default function Index() {
                     hasController={false}
                     hasCheckbox={false}
                     isLocked={false}
+                    idRoute="/dashboard/request/all"
                   />
                 )}
                 {loadingAllUsers && (

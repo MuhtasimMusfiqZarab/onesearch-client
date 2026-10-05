@@ -1,0 +1,79 @@
+query GET_USER($id: String!) {
+  getUser(id: $id) {
+    accessRole
+    authProvider
+    availableCredits
+    avatarLink
+    createdAt
+    # createdBy
+    email
+    firstName
+    id
+    isActive
+    language
+    lastName
+    rating
+    reviewText
+    # updatedAt
+    # updatedBy
+    profile {
+      availableCredits
+      city
+      country
+      createdAt
+      # createdBy
+      id
+      phoneNumber
+      updatedAt
+      # updatedBy
+    }
+    payments {
+      amount
+      createdAt
+      # createdBy
+      id
+      updatedAt
+      # updatedBy
+    }
+    requests {
+      category
+      createdAt
+      # createdBy
+      datasize
+      description
+      id
+      location
+      platform
+      status
+      updatedAt
+      # updatedBy
+      userId
+    }
+    linkedin {
+      company
+      createdAt
+      # createdBy
+      firstName
+      fullName
+      id
+      lastName
+      location
+      title
+      updatedAt
+      # updatedBy
+    }
+    youtube {
+      channel_name
+      createdAt
+      # createdBy
+      id
+      joined
+      location
+      socialblade_category
+      subscribers
+      updatedAt
+      # updatedBy
+      views
+    }
+  }
+}

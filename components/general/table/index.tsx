@@ -16,6 +16,7 @@ interface Props {
   isLocked?: boolean;
   forceLocked?: boolean;
   unlockedItems?: object[];
+  idRoute?: string;
   onUnlock?: (value: any) => void;
 }
 
@@ -29,6 +30,7 @@ export const Table: FC<Props> = ({
   isLocked = true,
   forceLocked = false,
   unlockedItems = [],
+  idRoute,
   onUnlock
 }: Props): JSX.Element => {
   let [toggleBtn, setToggleBtn] = useState(false);
@@ -261,12 +263,18 @@ export const Table: FC<Props> = ({
                         <td key={key} className={styles.td}>
                           <div className={styles.tr_info}>{headersEnums[key]}</div>
                           {isRequestIdCell ? (
-                            <a
-                              href="#"
-                              className={styles.request_id_link}
-                              onClick={(event) => event.preventDefault()}>
-                              {value}
-                            </a>
+                            idRoute ? (
+                              <Link href={`${idRoute}/${encodeURIComponent(String(item.id))}`}>
+                                <a className={styles.request_id_link}>{value}</a>
+                              </Link>
+                            ) : (
+                              <a
+                                href="#"
+                                className={styles.request_id_link}
+                                onClick={(event) => event.preventDefault()}>
+                                {value}
+                              </a>
+                            )
                           ) : rowIsUnlocked && parentRoute ? (
                             <Link href={`${parentRoute}/${item.id}`}>
                               <a>{value}</a>

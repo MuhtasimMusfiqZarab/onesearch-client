@@ -1,0 +1,16 @@
+query GET_REQUEST($id: String!) {
+  getRequest(id: $id) {
+    category
+    createdAt
+    # createdBy
+    datasize
+    description
+    id
+    location
+    platform
+    status
+    updatedAt
+    # updatedBy
+    userId
+  }
+}
