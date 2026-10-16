@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Prev, Next } from '../../_icons';
 import sideNavElements from 'components/utils/resolver/navigation/sidenav';
 import { IsCurrentRoute } from 'components/services/route';
@@ -8,6 +9,7 @@ import { useCurrentUser } from 'components/_context/user/current-user';
 import styles from './styles.module.scss';
 
 export default function SideNav() {
+  const router = useRouter();
   let prevBtn = useRef(null);
   let nextBtn = useRef(null);
   let navList = useRef(null);
@@ -47,7 +49,7 @@ export default function SideNav() {
               <li className={`${styles.nav__item} `} key={index}>
                 <Link href={`${element.route}`} key={index}>
                   <a
-                    className={`${IsCurrentRoute(element) && styles.nav__itemSelected}`}
+                    className={`${IsCurrentRoute(element, router.pathname) && styles.nav__itemSelected}`}
                     onClick={() => {
                       setCurrentActive(index);
                     }}>
