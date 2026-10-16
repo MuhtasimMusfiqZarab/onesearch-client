@@ -1,3 +1,5 @@
+# Rename .example.env.local to env.local to run the application.
+
 # OneSearch Client
 
 A Next.js-based multi-platform search aggregation application built with Next.js 12, React 17, and TypeScript.
@@ -14,6 +16,7 @@ A Next.js-based multi-platform search aggregation application built with Next.js
 OneSearch is a comprehensive search aggregation platform that enables users to search across multiple platforms—**YouTube, Google, LinkedIn, and Facebook**—from a single unified interface. The application provides advanced filtering, data export, credit-based billing, and comprehensive admin management capabilities.
 
 ### Key Highlights
+
 - ✅ **Multi-Platform Search** - Aggregate results from YouTube, Google, LinkedIn, and Facebook
 - ✅ **TypeScript-First** - 84.2% TypeScript for type safety and maintainability
 - ✅ **GraphQL Integration** - Apollo Client for efficient data fetching and state management
@@ -25,6 +28,7 @@ OneSearch is a comprehensive search aggregation platform that enables users to s
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 14+ and npm/yarn
 - Git
 
@@ -123,38 +127,45 @@ For detailed structure documentation, see [APPLICATION_STRUCTURE.md](APPLICATION
 ## 🛠 Technology Stack
 
 ### Core Framework
+
 - **Next.js 12.1.0** - React framework with SSR/SSG and built-in optimization
 - **React 17.0.2** - UI library for building interactive components
 - **TypeScript 4.4.2** - Typed JavaScript for better developer experience
 
 ### State Management & Data
+
 - **Apollo Client 3.4.10** - GraphQL client for state management and API communication
 - **GraphQL 15.7.2** - Query language for API
 - **graphql-tag 2.12.5** - GraphQL query parser
 
 ### Styling
+
 - **SCSS/SASS 1.39.0** - CSS preprocessor
 - **sass-resources-loader 2.2.4** - Auto-inject SCSS variables
 - **CSS Modules** - Component-scoped styling to prevent conflicts
 
 ### UI Components & Libraries
+
 - **React Icons 4.7.1** - Icon library
 - **React Slick 0.28.1** - Carousel/slider component
 - **React Toastify 9.1.1** - Toast notifications
 - **React Typed 1.2.0** - Typing animation
 
 ### Maps & Geolocation
+
 - **Leaflet 1.9.3** - Interactive mapping library
 - **react-leaflet 4.2.0** - React wrapper for Leaflet
 - **google-map-react 2.1.10** - Google Maps integration
 
 ### Payments & Integrations
+
 - **@stripe/react-stripe-js 1.6.0** - Stripe React components
 - **@stripe/stripe-js 1.21.1** - Stripe JavaScript SDK
 - **react-facebook 8.1.4** - Facebook SDK integration
 - **react-papaparse 3.18.1** - CSV parsing
 
 ### Development Tools
+
 - **ESLint 8.2.0** - Code linting
 - **Prettier** - Code formatting
 - **Babel 7.15.5** - JavaScript transpiler
@@ -163,6 +174,7 @@ For detailed structure documentation, see [APPLICATION_STRUCTURE.md](APPLICATION
 ## ✨ Features
 
 ### 🔍 Multi-Platform Search
+
 - **YouTube Search** - Search channels, videos, and playlists
 - **Google Search** - Web search with advanced filters
 - **LinkedIn Search** - Find companies, people, and jobs
@@ -172,30 +184,35 @@ For detailed structure documentation, see [APPLICATION_STRUCTURE.md](APPLICATION
 - Bookmark and save searches
 
 ### 👤 User Management
+
 - **Google OAuth & Facebook Login** - Secure authentication
 - **User Profiles** - Customizable user settings
 - **Review System** - User ratings and reviews
 - **Subscription Levels** - Multiple membership tiers
 
 ### 💰 Billing & Credits
+
 - **Credit-Based System** - Track API usage with credits
 - **Stripe Integration** - Secure payment processing
 - **Subscription Management** - Auto-renewal and plan switching
 - **Credit History** - Detailed usage analytics
 
 ### 📊 Admin Dashboard
+
 - **User Management** - View, edit, and manage user accounts
 - **Request Monitoring** - Approve/deny data requests
 - **Analytics** - Platform performance metrics
 - **Bulk Operations** - Manage multiple users/requests
 
 ### 🗺️ Interactive Maps
+
 - **Location Visualization** - Display search results on maps
 - **Leaflet Maps** - High-performance map rendering
 - **Google Maps** - Integration with Google Maps API
 - **Clustering** - Group nearby locations intelligently
 
 ### 📱 Responsive UI
+
 - **Mobile-First Design** - Optimized for all screen sizes
 - **Accessibility (WCAG)** - Inclusive design for all users
 - **Toast Notifications** - Real-time user feedback
@@ -205,7 +222,9 @@ For detailed structure documentation, see [APPLICATION_STRUCTURE.md](APPLICATION
 ## 🔧 Configuration
 
 ### TypeScript
+
 Configuration for type checking and compilation:
+
 ```json
 {
   "compilerOptions": {
@@ -220,13 +239,16 @@ Configuration for type checking and compilation:
 ```
 
 ### Next.js
+
 Key Next.js configurations in `next.config.js`:
+
 - SCSS module support
 - Image optimization
 - API rewrites and redirects
 - Custom Webpack loader for SCSS variables
 
 ### ESLint & Prettier
+
 - **ESLint** ensures code quality with strict rules
 - **Prettier** maintains consistent code formatting
 - Run `npm lint` to check for issues
@@ -235,6 +257,7 @@ Key Next.js configurations in `next.config.js`:
 ## 📚 API Integration
 
 ### GraphQL Queries & Mutations
+
 GraphQL operations are centralized in component contexts:
 
 ```typescript
@@ -250,6 +273,7 @@ query SearchYouTube($q: String!, $limit: Int) {
 ```
 
 ### External APIs
+
 - **Google OAuth** - User authentication and account creation
 - **Stripe API** - Payment processing and subscription management
 - **Facebook SDK** - Social login and chat features
@@ -258,14 +282,18 @@ query SearchYouTube($q: String!, $limit: Int) {
 ## 🎨 Styling Guide
 
 ### Global Styles
+
 All global styles are in `styles/main.scss`:
+
 ```scss
 // Imported in _app.tsx to apply to all pages
 import 'styles/main.scss';
 ```
 
 ### Component Styles
+
 Each component has its own SCSS module:
+
 ```scss
 // components/Button/Button.module.scss
 .button {
@@ -276,7 +304,9 @@ Each component has its own SCSS module:
 ```
 
 ### Shared Variables
+
 SCSS variables are auto-injected via webpack loader:
+
 ```scss
 // styles/shared/_variables.scss
 $primary-color: #007bff;
@@ -288,23 +318,25 @@ $secondary-color: #6c757d;
 ## 🧪 Development Workflow
 
 ### File Naming Conventions
+
 - **Components**: PascalCase (e.g., `Button.tsx`)
 - **Styles**: `ComponentName.module.scss`
 - **Context**: `FeatureName.context.tsx`
 - **Types/Interfaces**: `ComponentName.interface.ts`
 
 ### Component Structure
+
 ```typescript
 import styles from './Button.module.scss';
 import { ButtonProps } from './Button.interface';
 
-export const Button: React.FC<ButtonProps> = ({ 
-  label, 
-  onClick, 
-  disabled 
+export const Button: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  disabled
 }) => (
-  <button 
-    className={styles.button} 
+  <button
+    className={styles.button}
     onClick={onClick}
     disabled={disabled}
   >
@@ -316,7 +348,9 @@ export default Button;
 ```
 
 ### Barrel Exports
+
 Use `index.tsx` files for clean imports:
+
 ```typescript
 // components/general/index.tsx
 export { Button } from './Button/Button';
@@ -338,6 +372,7 @@ import { Button, Modal, Table } from 'components/general';
 ## 🚢 Deployment
 
 ### Vercel (Recommended)
+
 The application is optimized for deployment on [Vercel](https://vercel.com):
 
 ```bash
@@ -349,13 +384,17 @@ vercel
 ```
 
 ### Other Platforms
+
 The application can be deployed to any Node.js hosting:
+
 1. Build: `npm run build`
 2. Start: `npm start`
 3. Set environment variables on your hosting platform
 
 ### Environment Setup
+
 Ensure these variables are set on your deployment platform:
+
 - `GOOGLE_SIGNUP_URL`
 - `GOOGLE_REDIRECT_URL`
 - `PAYMENT_URL`
@@ -372,6 +411,7 @@ Contributions are welcome! Please follow these guidelines:
 5. Open a Pull Request
 
 ### Code Style
+
 - Follow the ESLint configuration
 - Use TypeScript for type safety
 - Write SCSS modules for component styles
@@ -388,6 +428,7 @@ Visit the live application: [OneSearch - onesearchio-muhtasimmusfiqzarab.vercel.
 ## 📧 Support & Contact
 
 For issues, questions, or feature requests:
+
 - **GitHub Issues**: [Open an issue](https://github.com/MuhtasimMusfiqZarab/onesearch-client/issues)
 - **Email**: muhtasim@example.com
 
