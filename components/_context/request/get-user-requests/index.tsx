@@ -55,7 +55,7 @@ function GetUserRequestsProvider({ children }) {
         setPlatform,
         setStatus,
         loading,
-        total: data?.getAllRequests?.totalCount,
+        total: data?.getAllRequestsOfUser?.totalCount,
         searchText,
         setSearchText
       }}>

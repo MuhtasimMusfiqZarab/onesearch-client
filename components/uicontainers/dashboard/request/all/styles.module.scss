@@ -1,5 +1,4 @@
 .container {
-  // display: flex;
   flex-direction: column;
   margin-left: auto;
   margin-right: auto;
@@ -54,7 +53,7 @@
     display: flex;
     width: 100%;
     gap: 25px;
-    margin-bottom: 20px;
+    margin: 1rem 0rem 0rem 0rem;
 
     @media (max-width: 767px) {
       flex-direction: column;
@@ -76,9 +75,88 @@
       input[type='text'] {
         height: 58px;
         border: 0;
-        // padding: 0.85rem 2rem;
       }
     }
+  }
+}
+
+.filtersToggle[class] {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  height: 50px;
+  padding: 0;
+  background: $os-secondary;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.25s;
+
+  &:hover {
+    background: $os-primary;
+  }
+
+  @media (max-width: 767px) {
+    display: flex;
+    min-width: 58px;
+    height: 59px;
+  }
+}
+
+.reset_form[class] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: $os-secondary;
+  border: 0;
+  padding: 0;
+  font-weight: 500;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+
+  &:hover {
+    background: transparent;
+    color: $os-primary;
+
+    svg {
+      path {
+        fill: $os-primary;
+      }
+    }
+  }
+}
+
+.edit_filters {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .reset_form_modal[class] {
+    @media (max-width: 767px) {
+      display: flex;
+    }
+  }
+
+  h3 {
+    color: #505050;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 29px;
+    margin-bottom: 22px;
+  }
+}
+
+.search_wrap {
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    margin-bottom: 10px;
   }
 }
 

@@ -27,8 +27,8 @@ export enum UsersTableEnum {
 }
 
 export enum RequestsTableEnum {
-  category = 'Category',
-  location = 'Country',
+  createdAt = 'Date',
+  id = 'Request ID',
   platform = 'Platform',
   status = 'Status'
 }

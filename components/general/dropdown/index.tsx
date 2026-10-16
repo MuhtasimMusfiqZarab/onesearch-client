@@ -21,11 +21,13 @@ export const Dropdown: FC<Props> = ({
   const dropWrap = useRef(null);
   const [opened, setOpened] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string>('-');
+  const [searchValue, setSearchValue] = useState<string>('');
   const [options, setOptions] = useState([]);
 
   const handleChange = (item) => {
     setOpened(false);
     setSelectedItem(item);
+    setSearchValue(item);
     setItem(item);
     setOffset(0);
   };
@@ -33,16 +35,37 @@ export const Dropdown: FC<Props> = ({
   const resetFilter = () => {
     setOpened(false);
     setSelectedItem('-');
+    setSearchValue('');
     setItem(null);
     setOffset(0);
   };
 
   const handleDropdownEleSearch = (event) => {
-    const searchQuery = event.target.value.trim();
+    const searchQuery = event.target.value;
+    const trimmedQuery = searchQuery.trim();
     const optionsArr = items.filter((item) =>
-      item.toLowerCase().startsWith(searchQuery.toLowerCase())
+      item.toLowerCase().startsWith(trimmedQuery.toLowerCase())
     );
+
     setOptions(optionsArr);
+    setSearchValue(searchQuery);
+    setItem(trimmedQuery || null);
+    setSelectedItem(trimmedQuery || '-');
+  };
+
+  const handleSearchKeyDown = (event) => {
+    if (event.key !== 'Enter') return;
+
+    const trimmedValue = searchValue.trim();
+    if (!trimmedValue) {
+      setOpened(false);
+      return;
+    }
+
+    setOpened(false);
+    setSelectedItem(trimmedValue);
+    setItem(trimmedValue);
+    if (setOffset) setOffset(0);
   };
 
   useEffect(() => {
@@ -67,7 +90,13 @@ export const Dropdown: FC<Props> = ({
         <div className={`${styles.options_container} ${opened ? styles.active : ''}`}>
           {isSearch && (
             <div className={styles.item_search}>
-              <input type="search" name="search" onChange={handleDropdownEleSearch} />
+              <input
+                type="search"
+                name="search"
+                value={searchValue}
+                onChange={handleDropdownEleSearch}
+                onKeyDown={handleSearchKeyDown}
+              />
             </div>
           )}
 

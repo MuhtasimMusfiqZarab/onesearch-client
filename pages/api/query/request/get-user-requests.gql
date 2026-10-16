@@ -1,6 +1,8 @@
 query GET_ALL_USER_REQUESTS($data: GetRequestInput!) {
   getAllRequestsOfUser(data: $data) {
     requests {
+      id
+      createdAt
       category
       location
       description

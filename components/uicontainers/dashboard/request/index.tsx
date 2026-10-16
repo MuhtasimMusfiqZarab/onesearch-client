@@ -28,19 +28,24 @@ export default function Index() {
   const [offset, setOffset] = useState<number>(0);
 
   const setRequest = () => {
+    if (!currentUser?.id) return;
+
+    const payload = {
+      userId: currentUser.id,
+      platform: platform || '',
+      category: category || '',
+      location: country || '',
+      description: description || '',
+      datasize: datasize || ''
+    };
+
     addRequest({
       variables: {
-        input: {
-          userId: currentUser.id,
-          platform,
-          category,
-          location: country,
-          description,
-          datasize
-        }
+        input: [payload]
       },
       update(cache) {
         cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequests' });
+        cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequestsOfUser' });
       }
     });
     setIsOpen(!setIsOpen);
@@ -75,7 +80,7 @@ export default function Index() {
                   setItem={setCategory}
                   setOffset={setOffset}
                   items={['Company', 'Individual']}
-                  isSearch={false}
+                  isSearch={true}
                 />
               </div>
 

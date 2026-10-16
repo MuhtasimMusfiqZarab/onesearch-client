@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styles from './styles.module.scss';
 
 interface Props {
-  items: any[];
+  items?: any[];
   headersEnums: object;
   hasController?: boolean;
   hasCheckbox?: boolean;
@@ -16,11 +16,12 @@ interface Props {
   isLocked?: boolean;
   forceLocked?: boolean;
   unlockedItems?: object[];
+  idRoute?: string;
   onUnlock?: (value: any) => void;
 }
 
 export const Table: FC<Props> = ({
-  items,
+  items = [],
   headersEnums,
   hasController = true,
   hasCheckbox = true,
@@ -29,6 +30,7 @@ export const Table: FC<Props> = ({
   isLocked = true,
   forceLocked = false,
   unlockedItems = [],
+  idRoute,
   onUnlock
 }: Props): JSX.Element => {
   let [toggleBtn, setToggleBtn] = useState(false);
@@ -38,6 +40,7 @@ export const Table: FC<Props> = ({
   const [rowLockMap, setRowLockMap] = useState<Record<string | number, boolean>>({});
 
   const [dummyArray, setDummyArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  const safeItems = Array.isArray(items) ? items : [];
 
   useEffect(() => {
     if (forceLocked) {
@@ -48,22 +51,26 @@ export const Table: FC<Props> = ({
     setRowLockMap((prev) => {
       const next = { ...prev };
 
-      items.forEach((item) => {
-        if (item?.id === undefined || item?.id === null) return;
-        if (!(item.id in next)) {
-          next[item.id] = false;
+      safeItems.forEach((item) => {
+        const itemId = item?.id;
+        if (itemId === undefined || itemId === null) return;
+        if (!(String(itemId) in next)) {
+          next[String(itemId)] = false;
         }
       });
 
       return next;
     });
-  }, [items, forceLocked]);
+  }, [safeItems, forceLocked]);
 
   const isRowUnlocked = (item: any): boolean => {
-    if (!isLocked || forceLocked) return false;
+    if (!item || (!isLocked && !forceLocked)) return false;
 
-    const isUserUnlocked = unlockedItems.some((value: any) => value.id === item.id);
-    return isUserUnlocked || Boolean(rowLockMap[item.id]);
+    const rowId = item?.id;
+    if (rowId === undefined || rowId === null) return false;
+
+    const isUserUnlocked = unlockedItems.some((value: any) => value?.id === rowId);
+    return isUserUnlocked || Boolean(rowLockMap[String(rowId)]);
   };
 
   const handleSelectAll = (e) => {
@@ -71,7 +78,7 @@ export const Table: FC<Props> = ({
     setIsCheckAll(nextState);
 
     if (nextState) {
-      const selectableRows = items.filter((item) => isRowUnlocked(item));
+      const selectableRows = safeItems.filter((item) => isRowUnlocked(item));
       setIsCheck(selectableRows.map((item) => item.id));
       return;
     }
@@ -82,7 +89,7 @@ export const Table: FC<Props> = ({
   const handleClick = (e) => {
     const { id, checked } = e.target;
     const itemId = id;
-    const item = items.find((entry) => entry.id === itemId);
+    const item = safeItems.find((entry) => entry?.id === itemId);
 
     if (!item || !isRowUnlocked(item)) {
       return;
@@ -100,19 +107,40 @@ export const Table: FC<Props> = ({
     setToggleBtn((toggleBtn = !toggleBtn));
   };
 
+  const getDisplayValue = (key: string, value: any) => {
+    if (value === null || value === undefined || value === '') return '-';
+
+    if (key === 'createdAt') {
+      const dateValue = new Date(value);
+      if (!Number.isNaN(dateValue.getTime())) {
+        return dateValue.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+      }
+    }
+
+    if (key === 'id' && typeof value === 'string') {
+      return value.slice(-11);
+    }
+
+    return value;
+  };
+
   const handleDownloadSelected = () => {
     if (!isCheck.length) {
       return;
     }
 
-    const selectedItems = items.filter((item) => isCheck.includes(item.id));
+    const selectedItems = safeItems.filter((item) => isCheck.includes(item?.id));
     const headerKeys = Object.keys(headersEnums);
 
     const headerRow = headerKeys.map((key) => `"${String(headersEnums[key]).replace(/"/g, '""')}"`);
     const dataRows = selectedItems.map((item) =>
       headerKeys
         .map((key) => {
-          const value = item[key] ?? '';
+          const value = getDisplayValue(key, item[key] ?? '');
           return `"${String(value).replace(/"/g, '""')}"`;
         })
         .join(',')
@@ -191,21 +219,23 @@ export const Table: FC<Props> = ({
                   {headersEnums[key]}
                 </th>
               ))}
-              <th className={styles.th}>
-                {isLocked ? (
-                  <div>
-                    <Lock color="#ffffff" />
+              {(isLocked || hasCheckbox) && (
+                <th className={styles.th}>
+                  {isLocked ? (
+                    <div>
+                      <Lock color="#ffffff" />
+                      <span></span>
+                    </div>
+                  ) : (
                     <span></span>
-                  </div>
-                ) : (
-                  <span></span>
-                )}
-              </th>
+                  )}
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className={styles.tbody}>
             {!loading &&
-              items.map((item, index) => {
+              safeItems.map((item, index) => {
                 const rowIsUnlocked = isRowUnlocked(item);
 
                 return (
@@ -226,12 +256,26 @@ export const Table: FC<Props> = ({
                       </td>
                     )}
                     {Object.keys(headersEnums).map((key) => {
-                      const value = item[key] ?? '-';
+                      const value = getDisplayValue(key, item[key]);
+                      const isRequestIdCell = key === 'id';
 
                       return (
                         <td key={key} className={styles.td}>
                           <div className={styles.tr_info}>{headersEnums[key]}</div>
-                          {rowIsUnlocked && parentRoute ? (
+                          {isRequestIdCell ? (
+                            idRoute ? (
+                              <Link href={`${idRoute}/${encodeURIComponent(String(item.id))}`}>
+                                <a className={styles.request_id_link}>{value}</a>
+                              </Link>
+                            ) : (
+                              <a
+                                href="#"
+                                className={styles.request_id_link}
+                                onClick={(event) => event.preventDefault()}>
+                                {value}
+                              </a>
+                            )
+                          ) : rowIsUnlocked && parentRoute ? (
                             <Link href={`${parentRoute}/${item.id}`}>
                               <a>{value}</a>
                             </Link>
@@ -241,38 +285,41 @@ export const Table: FC<Props> = ({
                         </td>
                       );
                     })}
-                    <td className={styles.td}>
-                      {isLocked && (
-                        <span
-                          className={styles.save_btn}
-                          title={
-                            forceLocked
-                              ? 'You need to login to access the detailed data.'
-                              : undefined
-                          }
-                          data-tooltip={
-                            forceLocked
-                              ? 'You need to login to access the detailed data.'
-                              : undefined
-                          }
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            if (forceLocked || !rowIsUnlocked || !onUnlock) return;
-                            onUnlock(item.id);
-                          }}>
-                          {rowIsUnlocked ? (
-                            <UnlockIcon color="#10b981" />
-                          ) : (
-                            <Lock color="#f59e0b" />
-                          )}
-                        </span>
-                      )}
+                    {(isLocked || hasCheckbox) && (
+                      <td className={styles.td}>
+                        {isLocked && (
+                          <span
+                            className={styles.save_btn}
+                            title={
+                              forceLocked
+                                ? 'You need to login to access the detailed data.'
+                                : undefined
+                            }
+                            data-tooltip={
+                              forceLocked
+                                ? 'You need to login to access the detailed data.'
+                                : undefined
+                            }
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              if (forceLocked || !rowIsUnlocked || !onUnlock) return;
+                              onUnlock(item.id);
+                            }}
+                            aria-label={forceLocked ? 'Login required' : 'Unlock row'}>
+                            {rowIsUnlocked ? (
+                              <UnlockIcon color="#10b981" />
+                            ) : (
+                              <Lock color="#f59e0b" />
+                            )}
+                          </span>
+                        )}
 
-                      <span onClick={handleToggleBtn} className={styles.toggle_btn}>
-                        {toggleBtn ? 'Show less' : 'Expand'}
-                        <DownArrow />
-                      </span>
-                    </td>
+                        <span onClick={handleToggleBtn} className={styles.toggle_btn}>
+                          {toggleBtn ? 'Show less' : 'Expand'}
+                          <DownArrow />
+                        </span>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
