@@ -3,6 +3,7 @@ import { Lock, DownArrow, UnlockIcon } from 'components/_icons';
 import { Controller } from './table-controller';
 import { Loader, Checkbox } from 'components/general';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import styles from './styles.module.scss';
 
@@ -18,6 +19,10 @@ interface Props {
   unlockedItems?: object[];
   idRoute?: string;
   onUnlock?: (value: any) => void;
+  clickableRows?: boolean;
+  sortable?: boolean;
+  sortableKeys?: string[];
+  allRowsUnlocked?: boolean;
 }
 
 export const Table: FC<Props> = ({
@@ -31,9 +36,17 @@ export const Table: FC<Props> = ({
   forceLocked = false,
   unlockedItems = [],
   idRoute,
-  onUnlock
+  onUnlock,
+  clickableRows = false,
+  sortable = false,
+  sortableKeys,
+  allRowsUnlocked = false
 }: Props): JSX.Element => {
+  const router = useRouter();
   let [toggleBtn, setToggleBtn] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(
+    null
+  );
 
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState<(string | number)[]>([]);
@@ -41,6 +54,38 @@ export const Table: FC<Props> = ({
 
   const [dummyArray, setDummyArray] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const safeItems = Array.isArray(items) ? items : [];
+  const sortedItems = sortConfig
+    ? [...safeItems].sort((left, right) => {
+        const leftValue = left?.[sortConfig.key];
+        const rightValue = right?.[sortConfig.key];
+        let comparison = 0;
+
+        if (leftValue === null || leftValue === undefined || leftValue === '') {
+          comparison =
+            rightValue === null || rightValue === undefined || rightValue === '' ? 0 : -1;
+        } else if (rightValue === null || rightValue === undefined || rightValue === '') {
+          comparison = 1;
+        } else if (sortConfig.key === 'createdAt') {
+          comparison = new Date(leftValue).getTime() - new Date(rightValue).getTime();
+        } else if (typeof leftValue === 'number' && typeof rightValue === 'number') {
+          comparison = leftValue - rightValue;
+        } else {
+          comparison = String(leftValue).localeCompare(String(rightValue), undefined, {
+            numeric: true,
+            sensitivity: 'base'
+          });
+        }
+
+        return sortConfig.direction === 'asc' ? comparison : -comparison;
+      })
+    : safeItems;
+
+  const handleSort = (key: string) => {
+    setSortConfig((current) => ({
+      key,
+      direction: current?.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
 
   useEffect(() => {
     if (forceLocked) {
@@ -64,6 +109,7 @@ export const Table: FC<Props> = ({
   }, [safeItems, forceLocked]);
 
   const isRowUnlocked = (item: any): boolean => {
+    if (allRowsUnlocked) return Boolean(item);
     if (!item || (!isLocked && !forceLocked)) return false;
 
     const rowId = item?.id;
@@ -216,7 +262,31 @@ export const Table: FC<Props> = ({
 
               {Object.keys(headersEnums).map((key) => (
                 <th key={key} className={styles.th}>
-                  {headersEnums[key]}
+                  {sortable && (!sortableKeys || sortableKeys.includes(key)) ? (
+                    <button
+                      type="button"
+                      className={styles.sortButton}
+                      onClick={() => handleSort(key)}
+                      aria-label={`Sort by ${headersEnums[key]} ${sortConfig?.key === key && sortConfig.direction === 'asc' ? 'descending' : 'ascending'}`}
+                      aria-sort={
+                        sortConfig?.key === key
+                          ? sortConfig.direction === 'asc'
+                            ? 'ascending'
+                            : 'descending'
+                          : 'none'
+                      }>
+                      {headersEnums[key]}
+                      <span aria-hidden="true">
+                        {sortConfig?.key === key
+                          ? sortConfig.direction === 'asc'
+                            ? ' ▲'
+                            : ' ▼'
+                          : ' ↕'}
+                      </span>
+                    </button>
+                  ) : (
+                    headersEnums[key]
+                  )}
                 </th>
               ))}
               {(isLocked || hasCheckbox) && (
@@ -235,7 +305,7 @@ export const Table: FC<Props> = ({
           </thead>
           <tbody className={styles.tbody}>
             {!loading &&
-              safeItems.map((item, index) => {
+              sortedItems.map((item, index) => {
                 const rowIsUnlocked = isRowUnlocked(item);
 
                 return (
@@ -243,13 +313,20 @@ export const Table: FC<Props> = ({
                     key={index}
                     className={`${styles.tr} ${toggleBtn ? styles.expand : ''} ${
                       isCheck.includes(item.id) ? styles.active_row : ''
-                    }`}>
+                    }`}
+                    onClick={() => {
+                      if (clickableRows && rowIsUnlocked && parentRoute) {
+                        router.push(`${parentRoute}/${encodeURIComponent(String(item.id))}`);
+                      }
+                    }}
+                    style={clickableRows && rowIsUnlocked ? { cursor: 'pointer' } : undefined}>
                     {hasCheckbox && (
                       <td className={styles.td}>
                         <input
                           type="checkbox"
                           id={item.id}
                           onChange={handleClick}
+                          onClick={(event) => event.stopPropagation()}
                           disabled={!rowIsUnlocked}
                           checked={isCheck.includes(item.id)}
                         />
@@ -305,7 +382,13 @@ export const Table: FC<Props> = ({
                               if (forceLocked || !rowIsUnlocked || !onUnlock) return;
                               onUnlock(item.id);
                             }}
-                            aria-label={forceLocked ? 'Login required' : 'Unlock row'}>
+                            aria-label={
+                              forceLocked
+                                ? 'Login required'
+                                : rowIsUnlocked
+                                ? 'Already unlocked'
+                                : 'Unlock row'
+                            }>
                             {rowIsUnlocked ? (
                               <UnlockIcon color="#10b981" />
                             ) : (
@@ -314,7 +397,12 @@ export const Table: FC<Props> = ({
                           </span>
                         )}
 
-                        <span onClick={handleToggleBtn} className={styles.toggle_btn}>
+                        <span
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleToggleBtn();
+                          }}
+                          className={styles.toggle_btn}>
                           {toggleBtn ? 'Show less' : 'Expand'}
                           <DownArrow />
                         </span>

@@ -107,6 +107,8 @@ export default function Index() {
                     hasCheckbox={false}
                     isLocked={false}
                     idRoute="/dashboard/request/all"
+                    sortable
+                    sortableKeys={['createdAt']}
                   />
                 )}
                 {loadingAllUsers && (

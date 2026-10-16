@@ -12,8 +12,9 @@ const DashboardLayout = (props) => {
     <React.Fragment>
       <CurrentUserProvider>
         <Header />
-        <SideNav />
-        <div className={styles.container}>
+        {!props.hideSideNav && <SideNav />}
+        <div
+          className={`${styles.container} ${props.hideSideNav ? styles.containerWithoutSideNav : ''}`}>
           <div className={styles.container__element}>{props.children}</div>
         </div>
         <BackToTop support={false} />

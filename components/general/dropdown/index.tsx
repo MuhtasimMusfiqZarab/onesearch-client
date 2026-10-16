@@ -43,7 +43,7 @@ export const Dropdown: FC<Props> = ({
   const handleDropdownEleSearch = (event) => {
     const searchQuery = event.target.value;
     const trimmedQuery = searchQuery.trim();
-    const optionsArr = items.filter((item) =>
+    const optionsArr = items?.filter((item) =>
       item.toLowerCase().startsWith(trimmedQuery.toLowerCase())
     );
 
@@ -105,7 +105,7 @@ export const Dropdown: FC<Props> = ({
             <label>All</label>
           </div>
 
-          {options.length > 0
+          {options?.length > 0
             ? options?.map((element, index) => {
                 return (
                   <div className={styles.option} key={index} onClick={() => handleChange(element)}>

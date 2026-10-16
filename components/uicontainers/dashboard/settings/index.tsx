@@ -61,8 +61,14 @@ export default function Settings() {
           <h4>Basic Information</h4>
           <div className={styles.profile__details}>
             <div>
-              <span>First Name</span>
-              <span>{currentUser ? currentUser.firstName : <Loader isTextBox />}</span>
+              <span>Name</span>
+              <span>
+                {currentUser ? (
+                  `${currentUser.firstName} ${currentUser.lastName}`
+                ) : (
+                  <Loader isTextBox />
+                )}
+              </span>
             </div>
 
             <div>
@@ -71,13 +77,8 @@ export default function Settings() {
             </div>
 
             <div>
-              <span>Last Name</span>
-              <span>{currentUser ? currentUser.lastName : <Loader isTextBox />}</span>
-            </div>
-
-            <div>
               <span>Total Coins</span>
-              <span>{currentUser ? currentUser.availableCredits : <Loader isTextBox />}</span>
+              <span>{currentUser ? currentUser?.availableCredits : 1}</span>
             </div>
           </div>
 

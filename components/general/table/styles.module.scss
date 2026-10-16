@@ -24,6 +24,24 @@
     font-weight: 500;
   }
 
+  .sortButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 3px;
+    }
+  }
+
   //apply different colors for individual row
   tbody {
     tr:nth-child(even) {

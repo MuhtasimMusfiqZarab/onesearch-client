@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Prev, Next } from '../../_icons';
-import sideNavElements, { adminNavElement } from 'components/utils/resolver/navigation/sidenav';
+import sideNavElements from 'components/utils/resolver/navigation/sidenav';
 import { IsCurrentRoute } from 'components/services/route';
 import { useCurrentUser } from 'components/_context/user/current-user';
 
@@ -14,7 +14,10 @@ export default function SideNav() {
 
   const [currentActive, setCurrentActive] = useState<number>(0);
 
-  const { currentUser, loading: loadingUser } = useCurrentUser();
+  const { currentUser } = useCurrentUser();
+  const visibleSideNavElements = sideNavElements.filter(
+    (element) => element.title !== 'Admin' || currentUser?.accessRole === 'Admin'
+  );
 
   useEffect(() => {
     let listScrollRight = navList.current.scrollLeft;
@@ -39,24 +42,22 @@ export default function SideNav() {
           <Prev />
         </a>
         <ul className={styles.nav__list} ref={navList}>
-          {sideNavElements.map(
-            (element, index): JSX.Element => {
-              return (
-                <li className={`${styles.nav__item} `} key={index}>
-                  <Link href={`${element.route}`} key={index}>
-                    <a
-                      className={`${IsCurrentRoute(element) && styles.nav__itemSelected}`}
-                      onClick={() => {
-                        setCurrentActive(index);
-                      }}>
-                      {element.icon}
-                      <p className={styles.nav__itemlabel}>{element.title}</p>
-                    </a>
-                  </Link>
-                </li>
-              );
-            }
-          )}
+          {visibleSideNavElements.map((element, index): JSX.Element => {
+            return (
+              <li className={`${styles.nav__item} `} key={index}>
+                <Link href={`${element.route}`} key={index}>
+                  <a
+                    className={`${IsCurrentRoute(element) && styles.nav__itemSelected}`}
+                    onClick={() => {
+                      setCurrentActive(index);
+                    }}>
+                    {element.icon}
+                    <p className={styles.nav__itemlabel}>{element.title}</p>
+                  </a>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
         <a href="#" className={styles.next__btn} ref={nextBtn}>
           <Next />

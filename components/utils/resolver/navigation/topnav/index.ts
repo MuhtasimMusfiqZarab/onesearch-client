@@ -19,6 +19,11 @@ const topNavElements: Props[] = [
     route: '/dashboard/search/youtube',
     hasChild: true,
     children: ['search', 'request', 'subscribe', 'settings', 'credit', 'download', 'admin']
+  },
+  {
+    title: 'Projects',
+    route: '/projects',
+    hasChild: false
   }
 ];
 export const topNavElementsBasic: Props[] = [

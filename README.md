@@ -1,5 +1,7 @@
 # Rename .example.env.local to env.local to run the application.
 
+Run `npm run dev` to start the development server.
+
 # OneSearch Client
 
 A Next.js-based multi-platform search aggregation application built with Next.js 12, React 17, and TypeScript.

@@ -91,9 +91,8 @@ export default function Index() {
                     headersEnums={YoutubeTableEnum}
                     parentRoute="/dashboard/search/youtube"
                     isLocked={true}
-                    forceLocked={!currentUser}
-                    unlockedItems={currentUser?.youtube ?? []}
-                    onUnlock={currentUser ? unlockLead : undefined}
+                    allRowsUnlocked
+                    clickableRows
                   />
                 )}
                 {loading && <Table items={channels} headersEnums={YoutubeTableEnum} loading />}

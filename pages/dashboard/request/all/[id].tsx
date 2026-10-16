@@ -105,41 +105,12 @@ export default function RequestDetailsPage() {
                     <dd>{request.updatedBy || '-'}</dd>
                   </div>
                   <div>
-                    <dt>User ID</dt>
-                    <dd>{request.userId || '-'}</dd>
+                    <dt>User Name</dt>
+                    <dd>
+                      {user?.firstName || '-'} {user?.lastName || '-'}
+                    </dd>
                   </div>
                 </dl>
-                <h2>Requester</h2>
-                {loadingUser && <p>Loading requester...</p>}
-                {userError && <p role="alert">Unable to load requester details.</p>}
-                {user && (
-                  <dl className={styles.details}>
-                    {Object.entries(user).map(([key, value]) => (
-                      <div key={key}>
-                        <dt>{formatFieldName(key)}</dt>
-                        <dd>
-                          {value === null || value === undefined ? (
-                            '-'
-                          ) : typeof value === 'object' ? (
-                            <pre className={styles.nestedValue}>
-                              {JSON.stringify(value, null, 2)}
-                            </pre>
-                          ) : typeof value === 'boolean' ? (
-                            value ? (
-                              'Yes'
-                            ) : (
-                              'No'
-                            )
-                          ) : key.endsWith('At') ? (
-                            formatDate(String(value))
-                          ) : (
-                            String(value)
-                          )}
-                        </dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
               </>
             )}
           </section>
