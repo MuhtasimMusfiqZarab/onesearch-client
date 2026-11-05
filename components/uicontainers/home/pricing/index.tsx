@@ -3,7 +3,7 @@ import SlickSlider from 'components/general/slick';
 import { Button } from 'components/general';
 
 import { useCurrentUser } from 'components/_context/user/current-user';
-import { processPayment } from 'components/uicontainers/login';
+import { processPayment } from 'service/payment';
 
 import styles from './styles.module.scss';
 import { TickIcon, SilverBadgeIcon, GoldenBadgeIcon, VipBadgeIcon } from 'components/_icons';

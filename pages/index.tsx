@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Home from 'components/uicontainers/home';
-import { FacebookProvider, CustomChat } from 'react-facebook';
 
 import { CurrentUserProvider } from 'components/_context/user/current-user';
 import { GetAllUserReviewsProvider } from 'components/_context/user/all-user-reviews';
@@ -16,10 +15,9 @@ export default function Index() {
     }
 
     const sessionId = router.query.session_id;
-    console.log('This is sessionId', sessionId);
 
     if (typeof sessionId === 'string') {
-      fetch(`/payment/process`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/payment/process`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
