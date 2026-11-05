@@ -1,4 +1,6 @@
 import Head from 'next/head';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Home from 'components/uicontainers/home';
 import { FacebookProvider, CustomChat } from 'react-facebook';
 
@@ -6,6 +8,44 @@ import { CurrentUserProvider } from 'components/_context/user/current-user';
 import { GetAllUserReviewsProvider } from 'components/_context/user/all-user-reviews';
 
 export default function Index() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
+
+    const sessionId = router.query.session_id;
+
+    if (typeof sessionId === 'string') {
+      fetch(`/payment/process`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: 'Bearer ' + window.localStorage.getItem('jwtToken')
+        },
+        body: JSON.stringify({
+          payments: [
+            {
+              session_Id: sessionId.slice(0, -2)
+            }
+          ]
+        })
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            return res.json();
+          }
+
+          return res.json().then((json) => Promise.reject(json));
+        })
+        .then(({ url }) => {
+          window.location.href = '/';
+        })
+        .catch((e) => console.error(e.error));
+    }
+  }, [router.isReady, router.query.session_id]);
+
   return (
     <>
       <Head>

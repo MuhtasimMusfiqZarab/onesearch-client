@@ -19,8 +19,6 @@ export default function Reviews() {
   const { currentUser, loading } = useCurrentUser();
   const { allUserReviews, loading: allUserReviewsLoading } = useAllUserReviews();
 
-  console.log('These are all the reviews', allUserReviews);
-
   const [modalIsOpen, setIsOpen] = useState(false);
   const slickSettings = {
     infinite: false,
