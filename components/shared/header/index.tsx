@@ -12,7 +12,7 @@ const Header = () => {
     <header className={styles.site_header}>
       <div className={styles.container}>
         <div className={styles.brand_logo}>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a>
               <Logo />
             </a>

@@ -1,3 +1,7 @@
+declare namespace JSX {
+  type Element = import('react').JSX.Element;
+}
+
 declare module '*.graphql' {
   import { DocumentNode } from 'graphql';
   const Schema: DocumentNode;

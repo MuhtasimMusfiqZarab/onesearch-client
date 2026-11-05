@@ -7,7 +7,7 @@ export default function Review({ name, quote, avatar, rating, ratingId }) {
     <div className={styles.review}>
       <div className={styles.review__info}>
         <div className={styles.review__thumb}>
-          <Image src={avatar} alt={name} width="100%" height="100%" />
+          <Image src={avatar} alt={name} width={48} height={48} />
         </div>
         <div className={styles.review__details}>
           <span className={styles.review__name}>{name}</span>

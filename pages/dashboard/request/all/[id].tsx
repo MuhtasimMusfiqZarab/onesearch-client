@@ -48,7 +48,7 @@ export default function RequestDetailsPage() {
       </Head>
       <DashboardLayout>
         <main className={styles.page}>
-          <Link href="/dashboard/request/all">
+          <Link href="/dashboard/request/all" legacyBehavior>
             <a className={styles.backLink}>Back to requests</a>
           </Link>
           <section className={styles.content}>

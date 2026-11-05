@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footer_container}>
         <div className={styles.footer_widget}>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a className={styles.footer_widget_logo}>
               <Logo color="#ffffff" />
             </a>
@@ -34,25 +34,25 @@ export default function Footer() {
         <div className={styles.footer_widget}>
           <ul>
             <li>
-              <Link href="/privacy-policy">
-                <h3 className={styles.link}>
+              <h3 className={styles.link}>
+                <Link href="/privacy-policy" legacyBehavior>
                   <a>FAQ</a>
-                </h3>
-              </Link>
+                </Link>
+              </h3>
             </li>
             <li>
-              <Link href="/privacy-policy">
-                <h3 className={styles.link}>
+              <h3 className={styles.link}>
+                <Link href="/privacy-policy" legacyBehavior>
                   <a>Privacy Policy</a>
-                </h3>
-              </Link>
+                </Link>
+              </h3>
             </li>
             <li>
-              <Link href="/terms-of-service">
-                <h3 className={styles.link}>
+              <h3 className={styles.link}>
+                <Link href="/terms-of-service" legacyBehavior>
                   <a>Terms of service</a>
-                </h3>
-              </Link>
+                </Link>
+              </h3>
             </li>
             <li>
               <h3 className={styles.link}>

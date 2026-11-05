@@ -47,7 +47,7 @@ export default function SideNav() {
           {visibleSideNavElements.map((element, index): JSX.Element => {
             return (
               <li className={`${styles.nav__item} `} key={index}>
-                <Link href={`${element.route}`} key={index}>
+                <Link href={`${element.route}`} key={index} legacyBehavior>
                   <a
                     className={`${IsCurrentRoute(element, router.pathname) && styles.nav__itemSelected}`}
                     onClick={() => {

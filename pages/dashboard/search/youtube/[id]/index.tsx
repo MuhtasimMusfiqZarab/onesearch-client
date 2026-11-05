@@ -40,7 +40,7 @@ export default function Channel() {
       <DashboardLayout>
         <div className={styles.user_infos}>
           <div className={styles.paginations}>
-            <Link href="/dashboard/search/youtube/">
+            <Link href="/dashboard/search/youtube/" legacyBehavior>
               <a href="#" className="btn btn_fill_primary">
                 <ArrowLeft /> Previous
               </a>

@@ -27,7 +27,7 @@ export default function TopNav({ isTransperant }: Props) {
       </label>
       <ul className={styles.nav__menu}>
         <li>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a>
               <Logo />
             </a>
@@ -36,7 +36,7 @@ export default function TopNav({ isTransperant }: Props) {
         {topNavElements.map((element, index): JSX.Element => {
           return (
             <li key={index}>
-              <Link href={`${element.route}`} key={index}>
+              <Link href={`${element.route}`} key={index} legacyBehavior>
                 <a
                   className={`${IsCurrentRoute(element, router.pathname) && styles.activeNavElement}`}
                   onClick={() => {

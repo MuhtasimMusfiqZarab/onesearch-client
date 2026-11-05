@@ -60,7 +60,7 @@ export const Text: FC<Props> = ({
       )}
       <p className={styles.text__desc} dangerouslySetInnerHTML={{ __html: content }}></p>
       {isButton && (
-        <Link href={buttonUrl ? buttonUrl : '/'}>
+        <Link href={buttonUrl ? buttonUrl : '/'} legacyBehavior>
           <a className={buttonClasses ? buttonClasses : 'btn btn_fill_primary'}>{buttonText}</a>
         </Link>
       )}

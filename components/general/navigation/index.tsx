@@ -25,7 +25,7 @@ const Navigation = ({ humberger }) => {
       <ul>
         {topNavElements.map((menu) => (
           <li key={menu.title} className={IsCurrentRoute(menu, router.pathname) ? 'active' : ''}>
-            <Link href={menu.route}>
+            <Link href={menu.route} legacyBehavior>
               <a onClick={handleActive}>{menu.title}</a>
             </Link>
           </li>
@@ -33,7 +33,7 @@ const Navigation = ({ humberger }) => {
 
         {loading && (
           <li>
-            <Link href={'/login'}>
+            <Link href={'/login'} legacyBehavior>
               <div className={styles.loadingContainer}>
                 <Loader isTextBox />
               </div>
@@ -49,7 +49,7 @@ const Navigation = ({ humberger }) => {
 
         {!currentUser && !loading && (
           <li>
-            <Link href={'/login'}>
+            <Link href={'/login'} legacyBehavior>
               <a className="btn btn_fill_primary">Login</a>
             </Link>
           </li>

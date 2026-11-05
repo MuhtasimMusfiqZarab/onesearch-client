@@ -16,6 +16,7 @@ export default function Index() {
     }
 
     const sessionId = router.query.session_id;
+    console.log('This is sessionId', sessionId);
 
     if (typeof sessionId === 'string') {
       fetch(`/payment/process`, {
@@ -42,7 +43,7 @@ export default function Index() {
         .then(({ url }) => {
           window.location.href = '/';
         })
-        .catch((e) => console.error(e.error));
+        .catch((e) => console.log(e));
     }
   }, [router.isReady, router.query.session_id]);
 

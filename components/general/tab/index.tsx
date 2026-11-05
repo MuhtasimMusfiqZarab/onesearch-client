@@ -31,7 +31,7 @@ export const Tab: FC<Props> = ({ items }: Props): JSX.Element => {
                   className={`${styles.listitem} ${
                     currentRoute === element.route ? styles.active : ''
                   }`}>
-                  <Link href={`${element.route}`}>
+                  <Link href={`${element.route}`} legacyBehavior>
                     <a>{element.title}</a>
                   </Link>
                 </li>

@@ -341,7 +341,7 @@ export const Table: FC<Props> = ({
                           <div className={styles.tr_info}>{headersEnums[key]}</div>
                           {isRequestIdCell ? (
                             idRoute ? (
-                              <Link href={`${idRoute}/${encodeURIComponent(String(item.id))}`}>
+                              <Link href={`${idRoute}/${encodeURIComponent(String(item.id))}`} legacyBehavior>
                                 <a className={styles.request_id_link}>{value}</a>
                               </Link>
                             ) : (
@@ -353,7 +353,7 @@ export const Table: FC<Props> = ({
                               </a>
                             )
                           ) : rowIsUnlocked && parentRoute ? (
-                            <Link href={`${parentRoute}/${item.id}`}>
+                            <Link href={`${parentRoute}/${item.id}`} legacyBehavior>
                               <a>{value}</a>
                             </Link>
                           ) : (

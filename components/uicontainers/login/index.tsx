@@ -56,7 +56,7 @@ const Login: FC<Props> = (): JSX.Element => {
           <p className={styles.joinUsText}>Join us and grow your business like never before!</p>
         </div>
         <div className={styles.login__welcome}>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a className={styles.go_to_home}>Go to Home</a>
           </Link>
           <h1>
@@ -86,14 +86,14 @@ const Login: FC<Props> = (): JSX.Element => {
                   <input type="checkbox" id="agree" onChange={handleAgree} checked={agree} />
                   <span>
                     I have read and agree to the{' '}
-                    <Link href="/terms-of-service">
+                    <Link href="/terms-of-service" legacyBehavior>
                       <a>
                         Terms of <br />
                         Service
                       </a>
                     </Link>{' '}
                     and{' '}
-                    <Link href="/privacy-policy">
+                    <Link href="/privacy-policy" legacyBehavior>
                       <a>Privacy Policy</a>
                     </Link>{' '}
                     of this website.
@@ -109,7 +109,7 @@ const Login: FC<Props> = (): JSX.Element => {
             </a>
           </button>
 
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <a className={styles.go_home}>Go to Home</a>
           </Link>
         </div>

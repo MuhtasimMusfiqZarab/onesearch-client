@@ -35,7 +35,7 @@ export const Dropbox: FC<Props> = ({ currentUser }: Props): JSX.Element => {
       <li className={styles.nav__listitem}>
         <div className={styles.logged}>
           <div className={styles.logged__thumb}>
-            {userAvatar && <Image src={userAvatar} alt="Nafiz" width="100%" height="100%" />}
+            {userAvatar && <Image src={userAvatar} alt="Nafiz" width={48} height={48} />}
           </div>
           <div className={styles.logged__details}>
             <span className={styles.logged__user}>{userName}</span>
