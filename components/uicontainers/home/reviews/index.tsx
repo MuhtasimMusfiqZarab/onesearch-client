@@ -12,8 +12,12 @@ import styles from './styles.module.scss';
 
 export default function Reviews() {
   const { currentUser, loading } = useCurrentUser();
-  const { allUserReviews, loading: allUserReviewsLoading, error: allUserReviewsError } =
-    useAllUserReviews();
+  const {
+    allUserReviews,
+    loading: allUserReviewsLoading,
+    error: allUserReviewsError,
+    refetch: refetchReviews
+  } = useAllUserReviews();
   const hasCurrentUserReview = Boolean(
     currentUser?.id && allUserReviews?.reviews?.some((review) => review.userId === currentUser.id)
   );
@@ -60,8 +64,7 @@ export default function Reviews() {
           </div>
 
           <div className={styles.reviews}>
-            {allUserReviewsError && <p>Unable to load reviews.</p>}
-            {!allUserReviewsLoading && !allUserReviewsError && (
+            {!allUserReviewsLoading && (
               <SlickSlider settings={slickSettings}>
                 {allUserReviews?.reviews?.map((review) => (
                   <Review key={review.id} {...review} />
@@ -80,6 +83,7 @@ export default function Reviews() {
             avatar={currentUser.avatarLink}
             setIsOpen={setIsOpen}
             existingReview={currentUserReview}
+            refetchReviews={refetchReviews}
           />
         </Modal>
       )}

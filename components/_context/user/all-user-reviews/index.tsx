@@ -7,7 +7,8 @@ import { useCurrentUser } from '../current-user';
 const GetAllUserReviewsContext = createContext({
   allUserReviews: null,
   loading: null,
-  error: null
+  error: null,
+  refetch: async () => {}
 });
 
 function GetAllUserReviewsProvider({ children }) {
@@ -23,7 +24,8 @@ function GetAllUserReviewsProvider({ children }) {
   const {
     data: currentUserReviewsData,
     error: currentUserReviewsError,
-    loading: currentUserReviewsLoading
+    loading: currentUserReviewsLoading,
+    refetch: refetchCurrentUserReviews
   } = useQuery(GET_ALL_REVIEWS, {
     variables: {
       data: {
@@ -34,12 +36,14 @@ function GetAllUserReviewsProvider({ children }) {
     skip: !currentUser?.id
   });
 
-  const { data: allReviewsData, error: allReviewsError, loading: allReviewsLoading } = useQuery(
-    GET_ALL_REVIEWS,
-    {
-      variables
-    }
-  );
+  const {
+    data: allReviewsData,
+    error: allReviewsError,
+    loading: allReviewsLoading,
+    refetch: refetchAllReviews
+  } = useQuery(GET_ALL_REVIEWS, {
+    variables
+  });
 
   const currentUserReview = currentUserReviewsData?.getAllReviews?.reviews?.[0];
   const otherReviews =
@@ -54,13 +58,20 @@ function GetAllUserReviewsProvider({ children }) {
     : allReviewsData?.getAllReviews;
   const loading = currentUserReviewsLoading || allReviewsLoading;
   const error = currentUserReviewsError || allReviewsError;
+  const refetch = async () => {
+    await Promise.all([
+      refetchAllReviews(),
+      currentUser?.id ? refetchCurrentUserReviews() : Promise.resolve()
+    ]);
+  };
 
   return (
     <GetAllUserReviewsContext.Provider
       value={{
         allUserReviews,
         loading,
-        error
+        error,
+        refetch
       }}>
       {children}
     </GetAllUserReviewsContext.Provider>

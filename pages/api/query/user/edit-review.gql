@@ -1,0 +1,7 @@
+mutation EDIT_REVIEW($input: EditReviewInput!) {
+  editReview(input: $input) {
+    id
+    rating
+    reviewText
+  }
+}

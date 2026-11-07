@@ -32,7 +32,7 @@ export default function Review({ id, rating, reviewText, userId }: ReviewType) {
         <div className={styles.review__details}>
           <span className={styles.review__name}>{name}</span>
           <span className={styles.review__rating}>
-            <Rating rating={String(rating)} id={id} isEditable={false} />
+            <Rating key={rating} rating={String(rating)} id={id} isEditable={false} />
           </span>
         </div>
       </div>

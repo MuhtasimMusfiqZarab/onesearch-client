@@ -5,28 +5,44 @@ import styles from './style.module.scss';
 import { useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import ADD_REVIEW from '../../../pages/api/query/user/add-review.gql';
+import EDIT_REVIEW from '../../../pages/api/query/user/edit-review.gql';
 
-const AddReview = ({ name, avatar, setIsOpen, userId, existingReview }) => {
-  const [addReview, { loading }] = useMutation(ADD_REVIEW);
+const AddReview = ({ name, avatar, setIsOpen, userId, existingReview, refetchReviews }) => {
+  const [addReview, { loading: addLoading }] = useMutation(ADD_REVIEW);
+  const [editReview, { loading: editLoading }] = useMutation(EDIT_REVIEW);
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState('');
+  const loading = addLoading || editLoading;
 
   useEffect(() => {
-    console.log('existingReview', existingReview);
     setRating(existingReview?.rating || 0);
     setReviewText(existingReview?.reviewText || '');
   }, [existingReview]);
 
   const setReview = async () => {
-    await addReview({
-      variables: {
-        input: {
-          userId,
-          rating,
-          reviewText
+    if (existingReview) {
+      await editReview({
+        variables: {
+          input: {
+            id: existingReview.id,
+            rating,
+            reviewText
+          }
         }
-      }
-    });
+      });
+    } else {
+      await addReview({
+        variables: {
+          input: {
+            userId,
+            rating,
+            reviewText
+          }
+        }
+      });
+    }
+
+    await refetchReviews();
     setIsOpen(false);
   };
 
