@@ -1,0 +1,8 @@
+query GET_REVIEWER($id: String!) {
+  getUser(id: $id) {
+    id
+    firstName
+    lastName
+    avatarLink
+  }
+}

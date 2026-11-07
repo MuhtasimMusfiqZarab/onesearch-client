@@ -2,19 +2,32 @@ import Image from 'next/image';
 import Rating from 'components/general/rating';
 import styles from './style.module.scss';
 
-import { useQuery, useMutation } from '@apollo/client';
-import ADD_USER_REVIEW from '../../../pages/api/query/user/add-review.gql';
+import { useMutation } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import ADD_REVIEW from '../../../pages/api/query/user/add-review.gql';
 
-const AddReview = ({ name, avatar, setIsOpen, userId }) => {
-  const [addReview, { data, loading, error }] = useMutation(ADD_USER_REVIEW);
+const AddReview = ({ name, avatar, setIsOpen, userId, existingReview }) => {
+  const [addReview, { loading }] = useMutation(ADD_REVIEW);
+  const [rating, setRating] = useState<number>(0);
+  const [reviewText, setReviewText] = useState('');
 
-  const setReview = () => {
-    addReview({
+  useEffect(() => {
+    console.log('existingReview', existingReview);
+    setRating(existingReview?.rating || 0);
+    setReviewText(existingReview?.reviewText || '');
+  }, [existingReview]);
+
+  const setReview = async () => {
+    await addReview({
       variables: {
-        input: { id: userId, reviewText: 'asdfasdfasdfasdfasdfasdf', rating: 4 }
+        input: {
+          userId,
+          rating,
+          reviewText
+        }
       }
     });
-    setIsOpen(!setIsOpen);
+    setIsOpen(false);
   };
 
   return (
@@ -34,19 +47,30 @@ const AddReview = ({ name, avatar, setIsOpen, userId }) => {
           className={styles.add_review__avatar}
         />
         <h4>{name}</h4>
-        <Rating rating={0} id="add-review" isEditable={true} />
+        <Rating
+          key={rating}
+          rating={String(rating)}
+          id="add-review"
+          isEditable={true}
+          onChange={(value) => setRating(parseFloat(value))}
+        />
       </div>
       <textarea
         name=""
         id=""
         cols={30}
         rows={10}
-        placeholder="Write about your expereince"></textarea>
+        placeholder="Write about your expereince"
+        onChange={(event) => setReviewText(event.target.value)}
+        value={reviewText}></textarea>
       <div className={styles.add_review__footer}>
-        <button onClick={() => setIsOpen(!setIsOpen)} className="btn btn_fill_primary">
+        <button onClick={() => setIsOpen(false)} className="btn btn_fill_primary">
           Skip
         </button>
-        <button onClick={setReview} className="btn btn_fill_primary">
+        <button
+          onClick={setReview}
+          disabled={loading || rating === 0}
+          className="btn btn_fill_primary">
           Submit
         </button>
       </div>

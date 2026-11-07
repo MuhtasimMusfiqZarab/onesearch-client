@@ -1,0 +1,25 @@
+query GET_ALL_REVIEWS($data: GetReviewInput!) {
+  getAllReviews(data: $data) {
+    currentUser {
+      createdAt
+      createdBy
+      id
+      rating
+      reviewText
+      updatedAt
+      updatedBy
+      userId
+    }
+    reviews {
+      createdAt
+      createdBy
+      id
+      rating
+      reviewText
+      updatedAt
+      updatedBy
+      userId
+    }
+    totalCount
+  }
+}

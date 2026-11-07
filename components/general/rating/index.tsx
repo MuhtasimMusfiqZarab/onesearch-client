@@ -1,8 +1,9 @@
 import styles from "./styles.module.scss";
 
-const Rating = ({ rating, id, isEditable }) => {
+const Rating = ({ rating, id, isEditable, onChange = undefined }) => {
 	const handleChange = (event) => {
 		event.target.checked = event.target.name;
+		onChange?.(event.target.value);
 	};
 
 	return (

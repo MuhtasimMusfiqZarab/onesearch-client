@@ -1,5 +1,5 @@
-mutation ADD_USER_REVIEW($input: AddReviewInput!) {
-  addUserReview(input: $input) {
+mutation ADD_REVIEW($input: AddReviewRecordInput!) {
+  addReview(input: $input) {
     rating
     reviewText
   }

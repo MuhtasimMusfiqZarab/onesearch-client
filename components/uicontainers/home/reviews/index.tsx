@@ -10,14 +10,16 @@ import { useAllUserReviews } from 'components/_context/user/all-user-reviews';
 
 import styles from './styles.module.scss';
 
-import ClientImage from '/public/client.png';
-import ClientImage1 from '/public/client1.png';
-import ClientImage4 from '/public/client4.jpeg';
-import ClientImage3 from '/public/client3.jpeg';
-
 export default function Reviews() {
   const { currentUser, loading } = useCurrentUser();
-  const { allUserReviews, loading: allUserReviewsLoading } = useAllUserReviews();
+  const { allUserReviews, loading: allUserReviewsLoading, error: allUserReviewsError } =
+    useAllUserReviews();
+  const hasCurrentUserReview = Boolean(
+    currentUser?.id && allUserReviews?.reviews?.some((review) => review.userId === currentUser.id)
+  );
+  const currentUserReview = allUserReviews?.reviews?.find(
+    (review) => review.userId === currentUser?.id
+  );
 
   const [modalIsOpen, setIsOpen] = useState(false);
   const slickSettings = {
@@ -52,45 +54,20 @@ export default function Reviews() {
             <Heading title="Customers" isUnderline={true} />
             {currentUser && !loading && (
               <button className="btn btn_fill_primary" onClick={() => setIsOpen(true)}>
-                Add Review
+                {hasCurrentUserReview ? 'Edit Review' : 'Add Review'}
               </button>
             )}
           </div>
 
           <div className={styles.reviews}>
-            <SlickSlider settings={slickSettings}>
-              <Review
-                name="clipPath"
-                quote="Very pleased with their service."
-                avatar={ClientImage}
-                rating="5"
-                ratingId="clipPath"
-              />
-
-              <Review
-                name="Jhon"
-                quote="Highly recommended!"
-                avatar={ClientImage1}
-                rating="4.5"
-                ratingId="jhon"
-              />
-
-              <Review
-                name="Doe"
-                quote="Need some improvement"
-                avatar={ClientImage4}
-                rating="4"
-                ratingId="doe"
-              />
-
-              <Review
-                name="Deniel"
-                quote="Very pleased with their service. Highly recommended!"
-                avatar={ClientImage3}
-                rating="3.5"
-                ratingId="deniel"
-              />
-            </SlickSlider>
+            {allUserReviewsError && <p>Unable to load reviews.</p>}
+            {!allUserReviewsLoading && !allUserReviewsError && (
+              <SlickSlider settings={slickSettings}>
+                {allUserReviews?.reviews?.map((review) => (
+                  <Review key={review.id} {...review} />
+                ))}
+              </SlickSlider>
+            )}
           </div>
         </div>
       </div>
@@ -102,6 +79,7 @@ export default function Reviews() {
             userId={currentUser.id}
             avatar={currentUser.avatarLink}
             setIsOpen={setIsOpen}
+            existingReview={currentUserReview}
           />
         </Modal>
       )}
