@@ -19,12 +19,13 @@ import styles from './styles.module.scss';
 
 export default function Channel() {
   const router = useRouter();
-  const channelId: string = router.query['id'] as string;
+  const channelId = typeof router.query.id === 'string' ? router.query.id : undefined;
 
-  const { data, error, loading, refetch } = useQuery(GET_CHANNEL, {
+  const { data } = useQuery(GET_CHANNEL, {
     variables: {
-      id: channelId
-    }
+      id: channelId || ''
+    },
+    skip: !router.isReady || !channelId
   });
 
   const channel = data?.channel;
