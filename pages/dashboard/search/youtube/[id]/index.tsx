@@ -21,12 +21,16 @@ export default function Channel() {
   const router = useRouter();
   const channelId = typeof router.query.id === 'string' ? router.query.id : undefined;
 
-  const { data } = useQuery(GET_CHANNEL, {
+  const { data, error } = useQuery(GET_CHANNEL, {
     variables: {
       id: channelId || ''
     },
     skip: !router.isReady || !channelId
   });
+
+  if (error && !data) {
+    return <p>{error.message}</p>;
+  }
 
   const channel = data?.channel;
   const updatedAt = channel?.updatedAt ? new Date(channel.updatedAt).toDateString() : 'Recently';
