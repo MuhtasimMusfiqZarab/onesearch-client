@@ -85,6 +85,10 @@
       background: rgba(73, 120, 155, 0.08);
       opacity: 0.9;
 
+      &.save_btn_clickable {
+        cursor: pointer;
+      }
+
       &[data-tooltip]:hover::after,
       &[data-tooltip]:focus::after {
         content: attr(data-tooltip);

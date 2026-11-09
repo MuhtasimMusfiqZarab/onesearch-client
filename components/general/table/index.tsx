@@ -111,6 +111,8 @@ export const Table: FC<Props> = ({
   const isRowUnlocked = (item: any): boolean => {
     if (allRowsUnlocked) return Boolean(item);
     if (!item || (!isLocked && !forceLocked)) return false;
+    if (forceLocked) return false;
+    if (typeof item.isUnlocked === 'boolean') return item.isUnlocked;
 
     const rowId = item?.id;
     if (rowId === undefined || rowId === null) return false;
@@ -366,25 +368,29 @@ export const Table: FC<Props> = ({
                       <td className={styles.td}>
                         {isLocked && (
                           <span
-                            className={styles.save_btn}
+                            className={`${styles.save_btn} ${
+                              !forceLocked && !rowIsUnlocked && onUnlock
+                                ? styles.save_btn_clickable
+                                : ''
+                            }`}
                             title={
                               forceLocked
-                                ? 'You need to login to access the detailed data.'
+                                ? 'You need to log in to unlock this row.'
                                 : undefined
                             }
                             data-tooltip={
                               forceLocked
-                                ? 'You need to login to access the detailed data.'
+                                ? 'You need to log in to unlock this row.'
                                 : undefined
                             }
                             onClick={(event) => {
                               event.stopPropagation();
-                              if (forceLocked || !rowIsUnlocked || !onUnlock) return;
+                              if (forceLocked || rowIsUnlocked || !onUnlock) return;
                               onUnlock(item.id);
                             }}
                             aria-label={
                               forceLocked
-                                ? 'Login required'
+                                ? 'You need to log in to unlock this row.'
                                 : rowIsUnlocked
                                 ? 'Already unlocked'
                                 : 'Unlock row'
