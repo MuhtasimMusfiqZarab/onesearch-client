@@ -45,7 +45,7 @@ export default function Index() {
     try {
       await unlockYoutubeLead({
         variables: {
-          input: { userId: currentUser.id, youtubeId: selectedChannelId }
+          input: { youtubeId: selectedChannelId }
         },
         update(cache) {
           cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllChannels' });
