@@ -1,12 +1,29 @@
 query channel($id: String!) {
   channel(id: $id) {
+    bio_email
     id
     channel_name
+    channel_url
+    createdAt
+    # createdBy
+    description
+    facebook
+    instagram
+    isUnlocked
     joined
-    views
-    subscribers
     location
+    others
+    pinterest
     socialblade_category
+    subscribers
+    tiktok
+    timestamp
+    twitter
     updatedAt
+    # updatedBy
+    users {
+      id
+    }
+    views
   }
 }

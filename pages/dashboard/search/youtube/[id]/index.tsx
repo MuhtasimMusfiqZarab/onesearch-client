@@ -127,6 +127,14 @@ Channel.AnvancedInfo = ({ data }: { data?: any }) => {
       <h3>Advanced information</h3>
       <ul>
         <li>
+          <span className={styles.info__title}>Email:</span>
+          <div className={styles.info__description}>
+            {Array.isArray(data?.bio_email) && data.bio_email.length > 0
+              ? data.bio_email.join(', ')
+              : 'null'}
+          </div>
+        </li>
+        <li>
           <span className={styles.info__title}>Channel URL:</span>
           <div className={styles.info__description}>
             <div className={styles.info__item}>
