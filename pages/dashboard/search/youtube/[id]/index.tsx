@@ -135,6 +135,26 @@ Channel.AnvancedInfo = ({ data }: { data?: any }) => {
           </div>
         </li>
         <li>
+          <span className={styles.info__title}>Facebook:</span>
+          <div className={styles.info__description}>{data?.facebook ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Instagram:</span>
+          <div className={styles.info__description}>{data?.instagram ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Pinterest:</span>
+          <div className={styles.info__description}>{data?.pinterest ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>TikTok:</span>
+          <div className={styles.info__description}>{data?.tiktok ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Twitter:</span>
+          <div className={styles.info__description}>{data?.twitter ?? 'null'}</div>
+        </li>
+        <li>
           <span className={styles.info__title}>Channel URL:</span>
           <div className={styles.info__description}>
             <div className={styles.info__item}>
