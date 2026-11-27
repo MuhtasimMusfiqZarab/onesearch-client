@@ -9,7 +9,7 @@ query channel($id: String!) {
     description
     facebook
     instagram
-    isUnlocked
+    # isUnlocked
     joined
     location
     others
