@@ -19,13 +19,18 @@ import styles from './styles.module.scss';
 
 export default function Channel() {
   const router = useRouter();
-  const channelId: string = router.query['id'] as string;
+  const channelId = typeof router.query.id === 'string' ? router.query.id : undefined;
 
-  const { data, error, loading, refetch } = useQuery(GET_CHANNEL, {
+  const { data, error } = useQuery(GET_CHANNEL, {
     variables: {
-      id: channelId
-    }
+      id: channelId || ''
+    },
+    skip: !router.isReady || !channelId
   });
+
+  if (error && !data) {
+    return <p>{error.message}</p>;
+  }
 
   const channel = data?.channel;
   const updatedAt = channel?.updatedAt ? new Date(channel.updatedAt).toDateString() : 'Recently';
@@ -121,6 +126,34 @@ Channel.AnvancedInfo = ({ data }: { data?: any }) => {
     <div className={styles.advanced__info}>
       <h3>Advanced information</h3>
       <ul>
+        <li>
+          <span className={styles.info__title}>Email:</span>
+          <div className={styles.info__description}>
+            {Array.isArray(data?.bio_email) && data.bio_email.length > 0
+              ? data.bio_email.join(', ')
+              : 'null'}
+          </div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Facebook:</span>
+          <div className={styles.info__description}>{data?.facebook ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Instagram:</span>
+          <div className={styles.info__description}>{data?.instagram ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Pinterest:</span>
+          <div className={styles.info__description}>{data?.pinterest ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>TikTok:</span>
+          <div className={styles.info__description}>{data?.tiktok ?? 'null'}</div>
+        </li>
+        <li>
+          <span className={styles.info__title}>Twitter:</span>
+          <div className={styles.info__description}>{data?.twitter ?? 'null'}</div>
+        </li>
         <li>
           <span className={styles.info__title}>Channel URL:</span>
           <div className={styles.info__description}>

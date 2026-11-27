@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import Modal from 'components/general/modal';
 import { Filter, Reset } from 'components/_icons';
 import { Pagination, Table, Dropdown, Tab, SearchBox, NotFound } from 'components/general';
@@ -8,7 +9,7 @@ import { useCurrentUser } from 'components/_context/user/current-user';
 import { useChannels, useCountries, useCategories } from 'components/_context/youtube';
 import { searchNavElements } from 'components/utils/resolver/navigation/tab';
 
-import { useQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import UNLOCK_YOUTUBE_LEAD from '../../../../../pages/api/mutation/youtube/unlock-youtube-lead.gql';
 
 export default function Index() {
@@ -26,21 +27,49 @@ export default function Index() {
   } = useChannels();
   const { countries } = useCountries();
   const { categories } = useCategories();
-  let [modalIsOpen, setIsOpen] = useState(false);
+  const [filtersModalIsOpen, setFiltersModalIsOpen] = useState(false);
+  const [unlockModalIsOpen, setUnlockModalIsOpen] = useState(false);
+  const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null);
+  const [unlockedItems, setUnlockedItems] = useState<{ id: string }[]>([]);
+  const [unlockRequestErrorMessage, setUnlockRequestErrorMessage] = useState('');
 
-  const [unlockYoutubeLead, { data, loading: unlockLoading, error }] =
-    useMutation(UNLOCK_YOUTUBE_LEAD);
+  const [unlockYoutubeLead, { loading: unlockLoading }] = useMutation(UNLOCK_YOUTUBE_LEAD);
+  const unlockErrorMessage = unlockRequestErrorMessage;
 
-  const unlockLead = (id: string) => {
-    unlockYoutubeLead({
-      variables: {
-        input: { userId: currentUser.id, youtubeId: id }
-      },
-      update(cache) {
-        cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllChannels' });
-      }
-    });
-    setIsOpen(!setIsOpen);
+  const promptToUnlock = (id: string) => {
+    setUnlockRequestErrorMessage('');
+    setSelectedChannelId(id);
+    setUnlockModalIsOpen(true);
+  };
+
+  const unlockLead = async () => {
+    if (!selectedChannelId || !currentUser?.id) return;
+
+    setUnlockRequestErrorMessage('');
+    try {
+      await unlockYoutubeLead({
+        variables: {
+          input: { youtubeId: selectedChannelId }
+        },
+        update(cache) {
+          cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllChannels' });
+        }
+      });
+
+      setUnlockedItems((items) =>
+        items.some((item) => item.id === selectedChannelId)
+          ? items
+          : [...items, { id: selectedChannelId }]
+      );
+      setUnlockModalIsOpen(false);
+      setSelectedChannelId(null);
+    } catch (unlockRequestError) {
+      setUnlockRequestErrorMessage(
+        unlockRequestError instanceof Error
+          ? unlockRequestError.message
+          : String(unlockRequestError)
+      );
+    }
   };
 
   return (
@@ -58,7 +87,7 @@ export default function Index() {
                   Reset
                 </button>
 
-                <button onClick={() => setIsOpen(true)} className={styles.filtersToggle}>
+                <button onClick={() => setFiltersModalIsOpen(true)} className={styles.filtersToggle}>
                   <Filter />
                 </button>
               </div>
@@ -91,7 +120,9 @@ export default function Index() {
                     headersEnums={YoutubeTableEnum}
                     parentRoute="/dashboard/search/youtube"
                     isLocked={true}
-                    allRowsUnlocked
+                    forceLocked={!currentUser?.id}
+                    unlockedItems={unlockedItems}
+                    onUnlock={currentUser?.id ? promptToUnlock : undefined}
                     clickableRows
                   />
                 )}
@@ -112,7 +143,7 @@ export default function Index() {
       </div>
 
       {/* filter modal */}
-      <Modal isOpen={modalIsOpen} setIsOpen={setIsOpen}>
+      <Modal isOpen={filtersModalIsOpen} setIsOpen={setFiltersModalIsOpen}>
         <div className={styles.edit_filters}>
           <h3>Edit Filters</h3>
           <div className={styles.filterItems}>
@@ -135,10 +166,47 @@ export default function Index() {
             />
           </div>
           <div className="text-center">
-            <button type="submit" className="btn_fill_secondary" onClick={() => setIsOpen(false)}>
+            <button
+              type="submit"
+              className="btn_fill_secondary"
+              onClick={() => setFiltersModalIsOpen(false)}>
               Apply Filter
             </button>
           </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={unlockModalIsOpen} setIsOpen={setUnlockModalIsOpen}>
+        <div className={styles.edit_filters}>
+          {unlockErrorMessage ? (
+            <div className={styles.unlockErrorState}>
+              <p role="alert">{unlockErrorMessage}</p>
+              <Link href="/dashboard/credit/add" className="btn btn_fill_secondary">
+                Buy Credit
+              </Link>
+            </div>
+          ) : (
+            <>
+              <h3>Unlock this row?</h3>
+              <p>Would you like to unlock access to this YouTube channel?</p>
+              <div className={`${styles.unlockActions} text-center`}>
+                <button
+                  type="button"
+                  className="btn_fill_secondary"
+                  onClick={() => setUnlockModalIsOpen(false)}
+                  disabled={unlockLoading}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn_fill_secondary"
+                  onClick={unlockLead}
+                  disabled={unlockLoading || !currentUser?.id}>
+                  {unlockLoading ? 'Unlocking...' : 'Unlock'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
     </>

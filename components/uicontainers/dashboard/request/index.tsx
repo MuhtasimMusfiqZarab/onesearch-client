@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Reset } from 'components/_icons';
-import { Tab, CsvDrop, NotFound, Dropdown, Popup } from 'components/general';
+import { Tab, NotFound, Dropdown } from 'components/general';
 import { requestNavElements } from 'components/utils/resolver/navigation/tab';
 import AutofillInput from 'components/general/autofill-input';
 import styles from './styles.module.scss';
@@ -8,16 +7,17 @@ import { useCurrentUser } from 'components/_context/user/current-user';
 
 import { countryList } from 'components/utils/resolver/all-countries';
 
-import { useQuery, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import ADD_REQUEST from '../../../../pages/api/mutation/request/add-request.gql';
 
-import GET_ALL_REQUESTS from '../../../../pages/api/query/request/get-all-requests.gql';
-
 export default function Index() {
-  const { currentUser, loading: loadingUser } = useCurrentUser();
-  const [addRequest, { data, loading, error }] = useMutation(ADD_REQUEST);
-  let [modalIsOpen, setIsOpen] = useState(false);
+  const { currentUser } = useCurrentUser();
+  const [addRequest, { loading }] = useMutation(ADD_REQUEST);
+  const [submitMessage, setSubmitMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
 
   const [country, setCountry] = useState<string>(null);
   const [category, setCategory] = useState<string>(null);
@@ -27,9 +27,10 @@ export default function Index() {
 
   const [offset, setOffset] = useState<number>(0);
 
-  const setRequest = () => {
+  const setRequest = async () => {
     if (!currentUser?.id) return;
 
+    setSubmitMessage(null);
     const payload = {
       userId: currentUser.id,
       platform: platform || '',
@@ -39,16 +40,27 @@ export default function Index() {
       datasize: datasize || ''
     };
 
-    addRequest({
-      variables: {
-        input: [payload]
-      },
-      update(cache) {
-        cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequests' });
-        cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequestsOfUser' });
-      }
-    });
-    setIsOpen(!setIsOpen);
+    try {
+      await addRequest({
+        variables: {
+          input: [payload]
+        },
+        update(cache) {
+          cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequests' });
+          cache.evict({ id: 'ROOT_QUERY', fieldName: 'getAllRequestsOfUser' });
+        }
+      });
+      setSubmitMessage({ type: 'success', text: 'Successfully requested!' });
+    } catch (requestError) {
+      console.error('Failed to submit request:', requestError);
+      setSubmitMessage({
+        type: 'error',
+        text:
+          requestError instanceof Error
+            ? requestError.message
+            : 'Unable to submit the request. Please try again.'
+      });
+    }
   };
 
   return (
@@ -92,11 +104,20 @@ export default function Index() {
                   onChange={(e) => setDescription(e.target.value)}></textarea>
               </div>
             </div>
-            <div className="text-right" onClick={() => setRequest()}>
-              <Popup type="success" message="Successfully Requested!">
-                <div>Submit</div>
-              </Popup>
+            <div className="text-right">
+              <button
+                type="button"
+                className="btn_fill_secondary"
+                onClick={setRequest}
+                disabled={loading}>
+                {loading ? 'Submitting...' : 'Submit'}
+              </button>
             </div>
+            {submitMessage && (
+              <p role={submitMessage.type === 'error' ? 'alert' : 'status'}>
+                {submitMessage.text}
+              </p>
+            )}
           </>
         ) : (
           <NotFound />
